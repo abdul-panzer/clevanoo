@@ -6,7 +6,7 @@ const Hero = () => {
       id="hero"
       className="hero d-flex align-items-center text-white position-relative"
       style={{
-        backgroundImage: 'url("./assets/images/hero-bg.svg")',
+        backgroundImage: 'url("./assets/images/hero-bg.png")',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         minHeight: '100vh',

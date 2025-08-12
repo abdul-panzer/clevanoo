@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 const Navbar = () => {
@@ -10,53 +10,14 @@ const Navbar = () => {
     setIsOpen(!isOpen);
   };
 
-  useEffect(() => {
-    const handleScroll = () => {
-      // Check if scrolled
-      const scrolled = window.scrollY > 50;
-      setIsScrolled(scrolled);
-
-      // Get current scroll position
-      const scrollY = window.scrollY;
-      
-      // Define sections and their background types
-      const sections = [
-        { start: 0, end: 1000, type: 'dark' },      // Hero section (dark background)
-        { start: 1000, end: 2000, type: 'light' },  // Job Categories (light background)
-        { start: 2000, end: 3000, type: 'dark' },   // New Jobs (dark background)
-        { start: 3000, end: 4000, type: 'light' },  // Job Gallery (light background)
-        { start: 4000, end: 5000, type: 'light' },  // Career Tips (light background)
-        { start: 5000, end: 6000, type: 'light' },  // Testimonials (light background)
-        { start: 6000, end: 7000, type: 'dark' },   // Subscription (dark background)
-      ];
-
-      // Find current section
-      let currentType = 'dark'; // Default to dark
-      for (const section of sections) {
-        if (scrollY >= section.start && scrollY < section.end) {
-          currentType = section.type;
-          break;
-        }
-      }
-
-      // Set navbar class based on background type
-      if (currentType === 'light') {
-        setNavbarClass("navbar-light");
-      } else {
-        setNavbarClass("navbar-dark");
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    handleScroll(); // Call once on mount
-
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  const closeMenu = () => {
+    setIsOpen(false);
+  };
 
   return (
     <nav className={`navbar navbar-expand-lg fixed-top border-bottom`}>
       <div className="container">
-        <Link className="navbar-brand fw-bold fs-4" to="/">
+        <Link className="navbar-brand fw-bold fs-4" to="/" onClick={closeMenu}>
           LOGO
         </Link>
         <button
@@ -67,30 +28,25 @@ const Navbar = () => {
         >
           <span className="navbar-toggler-icon"></span>
         </button>
-        <div className={`collapse navbar-collapse ${isOpen ? 'show' : ''}`} id="navMenu">
+        <div className={`collapse navbar-collapse ${isOpen ? "show" : ""}`} id="navMenu">
           <ul className="navbar-nav ms-auto">
             <li className="nav-item">
-              <Link className="nav-link d-flex align-items-center" to="/">
+              <Link className="nav-link d-flex align-items-center" to="/" onClick={closeMenu}>
                 Home
               </Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link d-flex align-items-center" to="/about">
+              <Link className="nav-link d-flex align-items-center" to="/about" onClick={closeMenu}>
                 About
               </Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link d-flex align-items-center" to="/services">
+              <Link className="nav-link d-flex align-items-center" to="/services" onClick={closeMenu}>
                 Services
               </Link>
             </li>
-            {/* <li className="nav-item">
-              <Link className="nav-link d-flex align-items-center" to="/career">
-                Career
-              </Link>
-            </li> */}
             <li className="nav-item">
-              <Link className="nav-link d-flex align-items-center" to="/contact">
+              <Link className="nav-link d-flex align-items-center" to="/contact" onClick={closeMenu}>
                 Contact
               </Link>
             </li>

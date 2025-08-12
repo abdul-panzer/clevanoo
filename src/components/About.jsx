@@ -17,6 +17,7 @@ const About = () => {
         </div>
         <div className="row align-items-center">
           <div className="col-lg-6" data-aos="fade-right">
+            <img src="/assets/images/aboutus.png" className="img-fluid rounded m-auto d-table" alt="About Us" />
           </div>
           <div className="col-lg-6" data-aos="fade-left">
             <h3 className="fw-bold text-dark mb-3">Our Story</h3>

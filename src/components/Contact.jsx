@@ -34,7 +34,7 @@ const Contact = () => {
                 <i className="fa fa-phone me-2"></i> +1 (555) 555-5555
               </p>
               <p className="mb-1">
-                <i className="fa fa-envelope me-2"></i> hello@clevanoo.com
+                <i className="fa fa-envelope me-2"></i> info@clevanoo.com
               </p>
               <p className="mb-0">
                 <i className="fa fa-map-marker-alt me-2"></i> Remote / Global

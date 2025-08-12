@@ -10,8 +10,8 @@ const Testimonials = () => {
     },
     {
       name: "Sarah Johnson",
-      title: "/assets/images/8.png",
-      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80",
+      title: "Senior Developer",
+      image: "/assets/images/8.png",
       text: "I was able to transition into a new role within weeks. The platform's user experience and job recommendations are outstanding."
     },
     {
