@@ -2,7 +2,7 @@ const content = {
   aboutIntro:
     "At Clevanoo LLC, we are a results-driven IT staffing and recruitment firm dedicated to connecting top-tier technology talent with forward-thinking companies across industries.",
   ourStory:
-    "Founded by a team of seasoned IT professionals and experienced staffing experts, Clevanoo was built on a dual-perspective approach—valuing technical expertise just as much as the human element. We understand that successful hiring is about more than just filling roles; it’s about building lasting partnerships that fuel innovation and growth.",
+    "Founded by a team of seasoned IT professionals and experienced staffing experts, Clevanoo was built on a dual-perspective approach—valuing technical expertise just as much as the human element.\n\nWe understand that successful hiring is about more than just filling roles; it’s about building lasting partnerships that fuel innovation and growth.",
   highlights: [
     {
       title: "Personalized Staffing",

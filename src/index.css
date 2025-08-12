@@ -31,6 +31,7 @@ body {
     --warning-color: #ffc107;
     --danger-color: #dc3545;
     --system-gray: #C1C1C1;
+    --nav-link: #c9c9c9;
     --white: #ffffff;
     --shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
     --shadow-lg: 0 1rem 3rem rgba(0, 0, 0, 0.175);
@@ -188,7 +189,7 @@ small,
     text-transform: uppercase;
     letter-spacing: 0.5px;
     transition: all 0.3s ease;
-    color: #ffffff !important;
+    color: var(--nav-link) !important;
 }
 
 .nav-link:hover {
@@ -758,4 +759,18 @@ footer {
     padding: 5px;
     background-color: var(--white);
     border: none;
+}
+
+.primary-color {
+    color: var(--primary-color) !important;
+}
+
+.ourapproach-card {
+    height: 200px;
+    object-fit: cover;
+    width: 80%;
+    margin: auto;
+    display: table;
+    margin-top: -5%;
+    border-radius: 8px;
 }

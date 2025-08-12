@@ -54,7 +54,7 @@ const Navbar = () => {
   }, []);
 
   return (
-    <nav className={`navbar navbar-expand-lg ${navbarClass} fixed-top border-bottom ${isScrolled ? 'scrolled' : ''}`} style={{ backgroundColor: isScrolled ? '#2c3e50' : 'transparent' }}>
+    <nav className={`navbar navbar-expand-lg fixed-top border-bottom`}>
       <div className="container">
         <Link className="navbar-brand fw-bold fs-4" to="/">
           LOGO
@@ -84,11 +84,11 @@ const Navbar = () => {
                 Services
               </Link>
             </li>
-            <li className="nav-item">
+            {/* <li className="nav-item">
               <Link className="nav-link d-flex align-items-center" to="/career">
                 Career
               </Link>
-            </li>
+            </li> */}
             <li className="nav-item">
               <Link className="nav-link d-flex align-items-center" to="/contact">
                 Contact

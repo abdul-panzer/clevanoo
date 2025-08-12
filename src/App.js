@@ -9,7 +9,13 @@ import { Routes, Route } from "react-router-dom";
 // Import page components
 import HomePage from "./pages/HomePage";
 import AboutPage from "./pages/AboutPage";
+import Aboutus from "../src/components/About";
+import WhatMakesUs from "../src/components/WhatMakesUs";
+import OurApproach from "../src/components/OurApproach";
+import OurMission from "../src/components/OurMission";
+import WhatWeDo from "../src/components/WhatWeDo";
 import ServicesPage from "./pages/ServicesPage";
+import ContactPage from "./pages/ContactPage";
 
 function App() {
   useEffect(() => {
@@ -28,9 +34,43 @@ function App() {
           transition={{ duration: 0.45 }}
         >
           <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/about" element={<AboutPage />} />
-            <Route path="/services" element={<ServicesPage />} />
+            <Route
+              path="/"
+              element={
+                <>
+                  <HomePage />
+                </>
+              }
+            />
+            <Route
+              path="/about"
+              element={
+                <>
+                  <Aboutus />
+                  <WhatMakesUs />
+                  <ContactPage />
+                </>
+              }
+            />
+            <Route
+              path="/services"
+              element={
+                <>
+                <OurApproach />
+                <OurMission />
+                <WhatWeDo />
+                <ContactPage />
+                </>
+              }
+            />
+            <Route
+              path="/contact"
+              element={
+                <>
+                  <ContactPage />
+                </>
+              }
+            />
           </Routes>
         </motion.main>
       </AnimatePresence>
