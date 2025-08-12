@@ -14,6 +14,7 @@ import WhatMakesUs from "../src/components/WhatMakesUs";
 import OurApproach from "../src/components/OurApproach";
 import OurMission from "../src/components/OurMission";
 import WhatWeDo from "../src/components/WhatWeDo";
+import ScrollToTop from "./components/ScrollToTop.jsx";
 import ServicesPage from "./pages/ServicesPage";
 import ContactPage from "./pages/ContactPage";
 
@@ -24,7 +25,8 @@ function App() {
 
   return (
     <div>
-      <Navbar />
+      <Navbar />      
+      <ScrollToTop />
       <AnimatePresence>
         <motion.main
           key="main"
@@ -48,7 +50,6 @@ function App() {
                 <>
                   <Aboutus />
                   <WhatMakesUs />
-                  <ContactPage />
                 </>
               }
             />
@@ -59,7 +60,6 @@ function App() {
                 <OurApproach />
                 <OurMission />
                 <WhatWeDo />
-                <ContactPage />
                 </>
               }
             />

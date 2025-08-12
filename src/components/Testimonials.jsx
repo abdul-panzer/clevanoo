@@ -5,12 +5,12 @@ const Testimonials = () => {
     {
       name: "K. Kishore",
       title: "Product Director",
-      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80",
+      image: "/assets/images/7.png",
       text: "The job portal helped me find my dream position. The matching algorithm is incredibly accurate and the support team is always helpful."
     },
     {
       name: "Sarah Johnson",
-      title: "Senior Developer",
+      title: "/assets/images/8.png",
       image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80",
       text: "I was able to transition into a new role within weeks. The platform's user experience and job recommendations are outstanding."
     },

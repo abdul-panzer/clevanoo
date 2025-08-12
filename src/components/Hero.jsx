@@ -31,7 +31,7 @@ const Hero = () => {
               </p>
               <button className="btn btn-lg px-4 py-3 text-white pill-button-design">
                 <span className="rounded-pill"></span>
-                <span className="btn-text">Find Out More</span>
+                <a href="/about" className="btn-text text-decoration-none text-white">Find Out More</a>
               </button>
             </div>
           </div>

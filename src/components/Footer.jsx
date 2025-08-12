@@ -80,12 +80,12 @@ const Footer = () => {
               <li className="mb-2">
                 <Link to="/contact" className="text-white text-decoration-none">Contact Us</Link>
               </li>
-              <li className="mb-2">
+              {/* <li className="mb-2">
                 <Link to="/coming-soon" className="text-white text-decoration-none">Coming Soon</Link>
               </li>
               <li className="mb-2">
                 <Link to="/maintenance" className="text-white text-decoration-none">Under Maintenance</Link>
-              </li>
+              </li> */}
             </ul>
           </div>
         </div>
@@ -94,7 +94,7 @@ const Footer = () => {
         <div className="border-top border-light pt-4 mt-4">
           <div className="row align-items-center">
             <div className="col-md-6">
-              <p className="mb-0">Copyright © 2005 All rights reserved</p>
+              <p className="mb-0">Copyright © 2025 All rights reserved</p>
             </div>
             <div className="col-md-6 text-md-end">
               <div className="social-icons">
