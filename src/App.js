@@ -15,7 +15,7 @@ import OurMission from "../src/components/OurMission";
 import WhatWeDo from "../src/components/WhatWeDo";
 import ScrollToTop from "./components/ScrollToTop";
 import ContactPage from "./pages/ContactPage";
-import UnsubscribePage from "./pages/UnsubscribePage";
+import UnsubscribePage from "./pages/UnsubscribeEmailPage";
 
 function App() {
   useEffect(() => {
