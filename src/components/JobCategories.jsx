@@ -68,8 +68,8 @@ const JobCategories = () => {
                   </div>
                   <h5 className="card-title fw-bold mb-3">{category.title}</h5>
                   <p className="card-text text-muted mb-4">{category.description}</p>
-                  <button className="btn readmore-button border-system-gray">READ MORE <svg width="9" height="8" viewBox="0 0 9 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M0.586777 7.50722L8.08242 1.69826M8.08242 1.69826L2.98946 0.931903M8.08242 1.69826L7.55364 6.82134" stroke="black" stroke-width="0.677362" stroke-linecap="round" stroke-linejoin="round" />
+                  <button className="btn readmore-button border-system-gray">READ MORE <svg width="9" height="8" viewBox="0 0 9 8" fill="none">
+                    <path d="M0.586777 7.50722L8.08242 1.69826M8.08242 1.69826L2.98946 0.931903M8.08242 1.69826L7.55364 6.82134" stroke="black" strokeWidth="0.677362" stroke-linecap="round" stroke-linejoin="round" />
                   </svg>
                   </button>
                 </div>

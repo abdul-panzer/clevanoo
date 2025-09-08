@@ -9,41 +9,22 @@ const Footer = () => {
           {/* LOGO Column */}
           <div className="col-lg-3 col-md-6">
             <div className="mb-4">
-              <h3 className="fw-bold mb-3">LOGO</h3>
-              <p className="mb-3">Share your resume, We'll quickly match you</p>
-              {/* <div className="mb-2">
-                <strong>Address:</strong> about
-              </div> */}
-              <div className="mb-2">
-                <strong>Email:</strong> <a href="mailto:info@clevanoollc.com">info@clevanoollc.com</a>
-              </div>
-              <div className="mb-2">
-                <strong>Call:</strong> 555-555-1234
-              </div>
+              <img className="img-fluid rounded m-auto d-table" alt="About Us" src="logo.png" />
             </div>
           </div>
 
           {/* For Candidate Column */}
-          {/* <div className="col-lg-3 col-md-6">
-            <h5 className="fw-bold mb-3">For Candidate</h5>
+          <div className="col-lg-3 col-md-6">
+            <h5 className="fw-bold mb-3">Contact</h5>
             <ul className="list-unstyled">
               <li className="mb-2">
-                <Link to="/candidates-list" className="text-white text-decoration-none">Candidates List</Link>
+                <strong>Email:</strong> <a href="mailto:info@clevanoollc.com">info@clevanoollc.com</a>
               </li>
               <li className="mb-2">
-                <Link to="/candidates-grid" className="text-white text-decoration-none">Candidates Grid</Link>
-              </li>
-              <li className="mb-2">
-                <Link to="/candidate-detail" className="text-white text-decoration-none">Candidate Detail</Link>
-              </li>
-              <li className="mb-2">
-                <Link to="/blog" className="text-white text-decoration-none">Blog</Link>
-              </li>
-              <li className="mb-2">
-                <Link to="/blog-grid-2" className="text-white text-decoration-none">Blog Grid-2</Link>
+                <strong>Call:</strong> (949) 570-4008
               </li>
             </ul>
-          </div> */}
+          </div>
 
           {/* For Employers Column */}
           {/* <div className="col-lg-3 col-md-6">
@@ -79,6 +60,9 @@ const Footer = () => {
               </li>
               <li className="mb-2">
                 <Link to="/contact" className="text-white text-decoration-none">Contact Us</Link>
+              </li>
+              <li className="mb-2">
+                <Link to="/unsubscribe-email" className="text-white text-decoration-none">Unsubscribe</Link>
               </li>
               {/* <li className="mb-2">
                 <Link to="/coming-soon" className="text-white text-decoration-none">Coming Soon</Link>

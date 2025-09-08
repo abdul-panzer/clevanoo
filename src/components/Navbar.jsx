@@ -18,7 +18,7 @@ const Navbar = () => {
     <nav className={`navbar navbar-expand-lg fixed-top border-bottom`}>
       <div className="container">
         <Link className="navbar-brand fw-bold fs-4" to="/" onClick={closeMenu}>
-          LOGO
+          <img className="img-fluid rounded m-auto d-table" alt="About Us" src="logo.png" width='125px' />
         </Link>
         <button
           className="navbar-toggler"

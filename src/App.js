@@ -8,15 +8,14 @@ import { Routes, Route } from "react-router-dom";
 
 // Import page components
 import HomePage from "./pages/HomePage";
-import AboutPage from "./pages/AboutPage";
 import Aboutus from "../src/components/About";
 import WhatMakesUs from "../src/components/WhatMakesUs";
 import OurApproach from "../src/components/OurApproach";
 import OurMission from "../src/components/OurMission";
 import WhatWeDo from "../src/components/WhatWeDo";
-import ScrollToTop from "./components/ScrollToTop.jsx";
-import ServicesPage from "./pages/ServicesPage";
+import ScrollToTop from "./components/ScrollToTop";
 import ContactPage from "./pages/ContactPage";
+import UnsubscribeEmailPage from "./pages/UnsubscribeEmailPage";
 
 function App() {
   useEffect(() => {
@@ -68,6 +67,14 @@ function App() {
               element={
                 <>
                   <ContactPage />
+                </>
+              }
+            />
+            <Route
+              path="/unsubscribe-email"
+              element={
+                <>
+                  <UnsubscribeEmailPage />
                 </>
               }
             />
