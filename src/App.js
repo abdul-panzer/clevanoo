@@ -15,7 +15,7 @@ import OurMission from "../src/components/OurMission";
 import WhatWeDo from "../src/components/WhatWeDo";
 import ScrollToTop from "./components/ScrollToTop";
 import ContactPage from "./pages/ContactPage";
-import UnsubscribeEmailPage from "./pages/UnsubscribeEmailPage";
+import UnsubscribePage from "./pages/UnsubscribePage";
 
 function App() {
   useEffect(() => {
@@ -74,7 +74,7 @@ function App() {
               path="/unsubscribe-email"
               element={
                 <>
-                  <UnsubscribeEmailPage />
+                  <UnsubscribePage />
                 </>
               }
             />
