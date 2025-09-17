@@ -62,6 +62,9 @@ const Footer = () => {
                 <Link to="/contact" className="text-white text-decoration-none">Contact Us</Link>
               </li>
               <li className="mb-2">
+                <Link to="/jobs" className="text-white text-decoration-none">Jobs</Link>
+              </li>
+              <li className="mb-2">
                 <Link to="/unsubscribe-email" className="text-white text-decoration-none">Unsubscribe</Link>
               </li>
               {/* <li className="mb-2">

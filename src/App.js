@@ -5,6 +5,7 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import { AnimatePresence, motion } from "framer-motion";
 import { Routes, Route } from "react-router-dom";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 // Import page components
 import HomePage from "./pages/HomePage";
@@ -16,6 +17,9 @@ import WhatWeDo from "../src/components/WhatWeDo";
 import ScrollToTop from "./components/ScrollToTop";
 import ContactPage from "./pages/ContactPage";
 import UnsubscribePage from "./pages/UnsubscribeEmailPage";
+import JobsPage from "./pages/JobsPage";
+import JobDetailPage from './pages/JobDetailPage';
+import JobUploadPage from './pages/JobUploadPage';
 
 function App() {
   useEffect(() => {
@@ -24,7 +28,7 @@ function App() {
 
   return (
     <div>
-      <Navbar />      
+      <Navbar />
       <ScrollToTop />
       <AnimatePresence>
         <motion.main
@@ -56,9 +60,9 @@ function App() {
               path="/services"
               element={
                 <>
-                <OurApproach />
-                <OurMission />
-                <WhatWeDo />
+                  <OurApproach />
+                  <OurMission />
+                  <WhatWeDo />
                 </>
               }
             />
@@ -75,6 +79,30 @@ function App() {
               element={
                 <>
                   <UnsubscribePage />
+                </>
+              }
+            />
+            <Route
+              path="/jobs"
+              element={
+                <>
+                  <JobsPage />
+                </>
+              }
+            />
+            <Route
+              path="/job/:id"
+              element={
+                <>
+                  <JobDetailPage />
+                </>
+              }
+            />
+            <Route
+              path="/jobUpload"
+              element={
+                <>
+                  <JobUploadPage />
                 </>
               }
             />
