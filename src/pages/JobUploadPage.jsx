@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-const API_URL = 'http://192.168.0.160/clevanoo-backend/public/api/all-jobs';
-const API_CREATE_URL = 'http://192.168.0.160/clevanoo-backend/public/api/create-job';
-const API_UPDATE_URL = 'http://192.168.0.160/clevanoo-backend/public/api/update-job';
-const JOB_DELETE_URL = 'http://192.168.0.160/clevanoo-backend/public/api/delete-job';
+const API_URL = 'https://clevanoo.com/backend/public/api/all-jobs';
+const API_CREATE_URL = 'https://clevanoo.com/backend/public/api/create-job';
+const API_UPDATE_URL = 'https://clevanoo.com/backend/public/api/update-job';
+const JOB_DELETE_URL = 'https://clevanoo.com/backend/public/api/delete-job';
 
 const JobUploadPage = () => {
     const [jobs, setJobs] = useState([]);

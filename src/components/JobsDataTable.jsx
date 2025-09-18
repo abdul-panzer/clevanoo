@@ -10,7 +10,7 @@ const JobsDataCards = () => {
     const [perPage, setPerPage] = useState(6);
     const [currentPage, setCurrentPage] = useState(1);
 
-    const API_URL = 'http://192.168.0.160/clevanoo-backend/public/api/all-jobs';
+    const API_URL = 'https://clevanoo.com/backend/public/api/all-jobs';
 
     const fetchJobs = async (page, size = perPage, searchTerm = search) => {
         setLoading(true);

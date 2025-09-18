@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import emailjs from '@emailjs/browser';
 
-const JOB_DETAIL_URL = 'http://192.168.0.160/clevanoo-backend/public/api/jobs';
+const JOB_DETAIL_URL = 'https://clevanoo.com/backend/public/api/jobs';
 
 const JobDetailPage = () => {
   const { id } = useParams();
@@ -104,12 +104,12 @@ const JobDetailPage = () => {
 
     try {
       const response = await axios.post(
-        'http://192.168.0.160/clevanoo-backend/public/api/save-candidates',
+        'https://clevanoo.com/backend/public/api/save-candidates',
         formDataToSend,
         { headers: { 'Content-Type': 'multipart/form-data' } }
       );
 
-      const resumeUrl = `http://192.168.0.160/clevanoo-backend/public/storage/${response.data.resume_path}`;
+      const resumeUrl = `https://clevanoo.com/backend/public/storage/${response.data.resume_path}`;
 
       const emailPayload = {
         message: `A new candidate has applied for ${job.jobtitle}.\n\nResume Link: ${resumeUrl}`,
