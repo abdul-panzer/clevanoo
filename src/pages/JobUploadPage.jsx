@@ -251,7 +251,7 @@ const JobUploadPage = () => {
                 {/* Modal for Add/Edit Job */}
                 {showModal && (
                     <div className="modal show" style={{ display: "block" }}>
-                        <div className="modal-dialog">
+                        <div className="modal-dialog" style={{ zIndex: 9999 }}>
                             <div className="modal-content">
                                 <div className="modal-header">
                                     <h5 className="modal-title">{selectedJob ? "Edit Job" : "Add New Job"}</h5>
