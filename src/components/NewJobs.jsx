@@ -83,7 +83,7 @@ const NewJobs = () => {
                           <h6 className="mb-1 fw-bold text-dark d-flex flex-row">{job.jobtitle}</h6>
                           <p className="text-muted">Location: {`${job.city}, ${job.state}`}</p>
                           <p className="text-muted">Duration: {job.duration}</p>
-                          <p className="text-muted">Rate: {job.bill_rate}</p>
+                          <p className="text-muted">Rate: DOE</p>
                           <p className="card-text text-muted mb-3">{truncateDescription(job.description)}</p>
                           <button
                             className="btn btn-primary btn-sm rounded-0"

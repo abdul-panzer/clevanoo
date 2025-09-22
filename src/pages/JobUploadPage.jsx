@@ -181,7 +181,7 @@ const JobUploadPage = () => {
                                                 <td>{job.city}</td>
                                                 <td>{job.state}</td>
                                                 <td>{job.duration}</td>
-                                                <td>{job.bill_rate}</td>
+                                                <td>DOE</td>
                                                 <td>
                                                     <button
                                                         className="btn btn-warning me-2"

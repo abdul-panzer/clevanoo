@@ -182,7 +182,7 @@ const JobDetailPage = () => {
                 <ul className="list-group mb-4">
                   <li className="list-group-item"><strong>Location:</strong> {job.city} - {job.state}</li>
                   <li className="list-group-item"><strong>Duration:</strong> {job.duration}</li>
-                  <li className="list-group-item"><strong>Bill Rate:</strong> {job.bill_rate}</li>
+                  <li className="list-group-item"><strong>Bill Rate:</strong> DOE</li>
                 </ul>
                 <div className="mb-4">
                   <h3 className="text-dark">{job.jobtitle}</h3>

@@ -117,7 +117,7 @@ const JobsDataCards = () => {
                                     <strong>Duration:</strong> {job.duration}
                                 </li>
                                 <li>
-                                    <strong>Bill Rate:</strong> {job.bill_rate}
+                                    <strong>Bill Rate:</strong> DOE
                                 </li>
                             </ul>
                         </div>
