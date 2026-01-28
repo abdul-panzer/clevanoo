@@ -13,12 +13,25 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* For Candidate Column */}
+          {/* Address Column */}
+          <div className="col-lg-3 col-md-6">
+            <h5 className="fw-bold mb-3">Address</h5>
+            <ul className="list-unstyled">
+              <li className="mb-2">
+                Clevanoo LLC<br />
+                Suite 262<br />
+                12800 Westridge Blvd<br />
+                Frisco, TX 75035
+              </li>
+            </ul>
+          </div>
+
+          {/* Contact Column */}
           <div className="col-lg-3 col-md-6">
             <h5 className="fw-bold mb-3">Contact</h5>
             <ul className="list-unstyled">
               <li className="mb-2">
-                <strong>Email:</strong> <a href="mailto:info@clevanoollc.com">info@clevanoollc.com</a>
+                <strong>Email:</strong> <a className="text-white" href="mailto:info@clevanoollc.com">info@clevanoollc.com</a>
               </li>
               <li className="mb-2">
                 <strong>Call:</strong> (949) 570-4008
