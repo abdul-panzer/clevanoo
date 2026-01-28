@@ -94,7 +94,7 @@ const Footer = () => {
         <div className="border-top border-light pt-4 mt-4">
           <div className="row align-items-center">
             <div className="col-md-6">
-              <p className="mb-0">Copyright © 2025 All rights reserved</p>
+              <p className="mb-0">Copyright © {new Date().getFullYear()} All rights reserved</p>
             </div>
             <div className="col-md-6 text-md-end">
               <div className="social-icons">
