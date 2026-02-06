@@ -779,3 +779,112 @@ footer {
     color: #000000 !important;
     font-weight: 700 !important;
 }
+
+/* Speciality Page Mobile Responsiveness */
+@media (max-width: 768px) {
+    .speciality-page .display-4 {
+        font-size: 2rem !important;
+    }
+    
+    .speciality-page .lead {
+        font-size: 1rem !important;
+        padding: 0 1rem;
+    }
+    
+    .speciality-page .card-img-top {
+        height: 150px !important;
+    }
+    
+    /* Hide icon overlay on mobile */
+    .speciality-page .position-absolute.top-50.start-50.translate-middle {
+        display: none !important;
+    }
+    
+    .speciality-page .card-body {
+        padding: 1rem !important;
+    }
+    
+    .speciality-page .card-title {
+        font-size: 1.1rem !important;
+        margin-bottom: 0.75rem !important;
+    }
+    
+    .speciality-page .card-text {
+        font-size: 0.9rem !important;
+        margin-bottom: 1rem !important;
+    }
+    
+    .speciality-page .badge {
+        font-size: 0.7rem !important;
+        padding: 0.25rem 0.5rem !important;
+    }
+    
+    .speciality-page .btn-outline-primary {
+        font-size: 0.9rem !important;
+        padding: 0.5rem 1rem !important;
+    }
+    
+    .speciality-page .text-center.mt-5 {
+        padding: 2rem 1rem !important;
+    }
+    
+    .speciality-page .text-center h3 {
+        font-size: 1.5rem !important;
+    }
+    
+    .speciality-page .text-center p {
+        font-size: 1rem !important;
+    }
+    
+    .speciality-page .btn-lg {
+        padding: 0.75rem 1.5rem !important;
+        font-size: 1rem !important;
+    }
+}
+
+@media (max-width: 576px) {
+    .speciality-page .display-4 {
+        font-size: 1.75rem !important;
+    }
+    
+    .speciality-page .lead {
+        font-size: 0.95rem !important;
+    }
+    
+    .speciality-page .card-img-top {
+        height: 120px !important;
+    }
+    
+    .speciality-page .position-absolute .bg-white {
+        width: 50px !important;
+        height: 50px !important;
+        padding: 0.75rem !important;
+    }
+    
+    .speciality-page .position-absolute .fa-2x {
+        font-size: 1rem !important;
+    }
+    
+    .speciality-page .card-title {
+        font-size: 1rem !important;
+    }
+    
+    .speciality-page .card-text {
+        font-size: 0.85rem !important;
+    }
+    
+    .speciality-page .badge {
+        font-size: 0.65rem !important;
+        padding: 0.2rem 0.4rem !important;
+    }
+    
+    .speciality-page .btn-outline-primary {
+        font-size: 0.85rem !important;
+        padding: 0.4rem 0.8rem !important;
+    }
+    
+    .speciality-page .container {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+    }
+}

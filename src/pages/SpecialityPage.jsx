@@ -76,7 +76,7 @@ const SpecialityPage = () => {
   ];
 
   return (
-    <div className="container py-5 mt-5">
+    <div className="container py-5 mt-5 speciality-page">
       <div className="text-center mb-5">
         <h1 className="display-4 fw-bold mb-4">Our Specialities</h1>
         <p className="lead">
@@ -87,7 +87,7 @@ const SpecialityPage = () => {
       
       <div className="row g-4">
         {specialities.map((speciality, index) => (
-          <div key={index} className="col-lg-6 col-xl-4" data-aos="fade-up" data-aos-delay={index * 50}>
+          <div key={index} className="col-12 col-md-6 col-lg-6 col-xl-4" data-aos="fade-up" data-aos-delay={index * 50}>
             <div className="card h-100 border-0 shadow-sm overflow-hidden">
               <div className="position-relative">
                 <img 
