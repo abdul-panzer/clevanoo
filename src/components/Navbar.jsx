@@ -1,10 +1,11 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [navbarClass, setNavbarClass] = useState("navbar-dark");
+  const location = useLocation();
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -12,6 +13,14 @@ const Navbar = () => {
 
   const closeMenu = () => {
     setIsOpen(false);
+  };
+
+  const isActiveLink = (path) => {
+    return location.pathname === path;
+  };
+
+  const getActiveClass = (path) => {
+    return isActiveLink(path) ? 'active-nav-link' : '';
   };
 
   return (
@@ -31,27 +40,32 @@ const Navbar = () => {
         <div className={`collapse navbar-collapse ${isOpen ? "show" : ""}`} id="navMenu">
           <ul className="navbar-nav ms-auto">
             <li className="nav-item">
-              <Link className="nav-link d-flex align-items-center" to="/" onClick={closeMenu}>
+              <Link className={`nav-link d-flex align-items-center ${getActiveClass('/')}`} to="/" onClick={closeMenu}>
                 Home
               </Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link d-flex align-items-center" to="/about" onClick={closeMenu}>
+              <Link className={`nav-link d-flex align-items-center ${getActiveClass('/about')}`} to="/about" onClick={closeMenu}>
                 About
               </Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link d-flex align-items-center" to="/services" onClick={closeMenu}>
+              <Link className={`nav-link d-flex align-items-center ${getActiveClass('/services')}`} to="/services" onClick={closeMenu}>
                 Services
               </Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link d-flex align-items-center" to="/jobs" onClick={closeMenu}>
+              <Link className={`nav-link d-flex align-items-center ${getActiveClass('/speciality')}`} to="/speciality" onClick={closeMenu}>
+                Specialities
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link className={`nav-link d-flex align-items-center ${getActiveClass('/jobs')}`} to="/jobs" onClick={closeMenu}>
                 Jobs
               </Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link d-flex align-items-center" to="/contact" onClick={closeMenu}>
+              <Link className={`nav-link d-flex align-items-center ${getActiveClass('/contact')}`} to="/contact" onClick={closeMenu}>
                 Contact
               </Link>
             </li>

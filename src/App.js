@@ -20,6 +20,7 @@ import UnsubscribePage from "./pages/UnsubscribeEmailPage";
 import JobsPage from "./pages/JobsPage";
 import JobDetailPage from './pages/JobDetailPage';
 import JobUploadPage from './pages/JobUploadPage';
+import SpecialityPage from './pages/SpecialityPage';
 
 function App() {
   useEffect(() => {
@@ -95,6 +96,14 @@ function App() {
               element={
                 <>
                   <JobDetailPage />
+                </>
+              }
+            />
+            <Route
+              path="/speciality"
+              element={
+                <>
+                  <SpecialityPage />
                 </>
               }
             />

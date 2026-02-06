@@ -773,3 +773,9 @@ footer {
     margin-top: -5%;
     border-radius: 8px;
 }
+
+/* Active Navigation Link */
+.active-nav-link {
+    color: #000000 !important;
+    font-weight: 700 !important;
+}

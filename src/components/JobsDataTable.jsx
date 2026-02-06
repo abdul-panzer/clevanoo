@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import Preloader from './Preloader';
 
 const JobsDataCards = () => {
     const [jobs, setJobs] = useState([]);
@@ -50,8 +51,11 @@ const JobsDataCards = () => {
     const handleSearchChange = (e) => {
         const val = e.target.value;
         setSearch(val);
-        fetchJobs(1, perPage, val);
         setCurrentPage(1);
+        // Add a small delay to show preloader for search
+        setTimeout(() => {
+            fetchJobs(1, perPage, val);
+        }, 300);
     };
 
     const totalPages = Math.ceil(totalRows / perPage);
@@ -72,77 +76,87 @@ const JobsDataCards = () => {
                 style={{ maxWidth: 400 }}
             />
 
-            {loading && <p>Loading jobs...</p>}
-
-            <div
-                style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
-                    gap: '20px',
-                }}
-            >
-                {jobs.map((job) => (
-                    <div
-                        key={job.id}
-                        style={{
-                            backgroundColor: 'rgba(255, 255, 255, 0.25)',
-                            backdropFilter: 'blur(10px)',
-                            WebkitBackdropFilter: 'blur(10px)',
-                            border: '1px solid rgba(255, 255, 255, 0.18)',
-                            boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.37)',
-                            borderRadius: '10px',
-                            padding: '20px',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            justifyContent: 'space-between',
-                            minHeight: '280px',
-                        }}
-                    >
-                        <div>
-                            <h3 className='text-dark' style={{ marginBottom: '10px' }}>{job.jobtitle}</h3>
-                            <p style={{ color: '#555', marginBottom: '12px', minHeight: '60px' }}>
-                                {job.description.length > 140
-                                    ? job.description.substring(0, 140) + '...'
-                                    : job.description}
-                            </p>
-
-                            <ul style={{ listStyle: 'none', paddingLeft: 0, color: '#333' }}>
-                                <li>
-                                    <strong>City:</strong> {job.city}
-                                </li>
-                                <li>
-                                    <strong>State:</strong> {job.state}
-                                </li>
-                                <li>
-                                    <strong>Duration:</strong> {job.duration}
-                                </li>
-                                <li>
-                                    <strong>Bill Rate:</strong> DOE
-                                </li>
-                            </ul>
-                        </div>
-
-                        <button
+            {loading ? (
+                <Preloader message={search ? "Searching jobs..." : "Loading jobs..."} />
+            ) : jobs.length === 0 && search ? (
+                <div style={{ textAlign: 'center', padding: '60px 20px' }}>
+                    <div style={{ fontSize: '3rem', marginBottom: '20px' }}>🔍</div>
+                    <h3 style={{ color: '#666', marginBottom: '10px' }}>No jobs found</h3>
+                    <p style={{ color: '#999' }}>
+                        Try adjusting your search terms or browse all available positions.
+                    </p>
+                </div>
+            ) : (
+                <div
+                    style={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
+                        gap: '20px',
+                    }}
+                >
+                    {jobs.map((job) => (
+                        <div
+                            key={job.id}
                             style={{
-                                marginTop: '15px',
-                                backgroundColor: '#86d7ff',
-                                border: 'none',
-                                borderRadius: '4px',
-                                color: '#fff',
-                                padding: '10px 15px',
-                                fontWeight: 'bold',
-                                cursor: 'pointer',
-                                transition: 'background-color 0.3s ease',
+                                backgroundColor: 'rgba(255, 255, 255, 0.25)',
+                                backdropFilter: 'blur(10px)',
+                                WebkitBackdropFilter: 'blur(10px)',
+                                border: '1px solid rgba(255, 255, 255, 0.18)',
+                                boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.37)',
+                                borderRadius: '10px',
+                                padding: '20px',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                justifyContent: 'space-between',
+                                minHeight: '280px',
                             }}
-                            onClick={() => navigate(`/job/${job.id}`)}
-                            onMouseEnter={(e) => (e.target.style.backgroundColor = '#66c1ff')}
-                            onMouseLeave={(e) => (e.target.style.backgroundColor = '#86d7ff')}
                         >
-                            READ MORE
-                        </button>
-                    </div>
-                ))}
-            </div>
+                            <div>
+                                <h3 className='text-dark' style={{ marginBottom: '10px' }}>{job.jobtitle}</h3>
+                                <p style={{ color: '#555', marginBottom: '12px', minHeight: '60px' }}>
+                                    {job.description.length > 140
+                                        ? job.description.substring(0, 140) + '...'
+                                        : job.description}
+                                </p>
+
+                                <ul style={{ listStyle: 'none', paddingLeft: 0, color: '#333' }}>
+                                    <li>
+                                        <strong>City:</strong> {job.city}
+                                    </li>
+                                    <li>
+                                        <strong>State:</strong> {job.state}
+                                    </li>
+                                    <li>
+                                        <strong>Duration:</strong> {job.duration}
+                                    </li>
+                                    <li>
+                                        <strong>Bill Rate:</strong> DOE
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <button
+                                style={{
+                                    marginTop: '15px',
+                                    backgroundColor: '#86d7ff',
+                                    border: 'none',
+                                    borderRadius: '4px',
+                                    color: '#fff',
+                                    padding: '10px 15px',
+                                    fontWeight: 'bold',
+                                    cursor: 'pointer',
+                                    transition: 'background-color 0.3s ease',
+                                }}
+                                onClick={() => navigate(`/job/${job.id}`)}
+                                onMouseEnter={(e) => (e.target.style.backgroundColor = '#66c1ff')}
+                                onMouseLeave={(e) => (e.target.style.backgroundColor = '#86d7ff')}
+                            >
+                                READ MORE
+                            </button>
+                        </div>
+                    ))}
+                </div>
+            )}
 
             {/* Pagination controls */}
             <div
