@@ -106,10 +106,16 @@ const JobUploadPage = () => {
     const handleSaveJob = async (e) => {
         e.preventDefault();
         try {
+            // Create a copy of formData with default bill_rate value
+            const dataToSend = {
+                ...formData,
+                bill_rate: 'DOE' // Default value since field is required by backend
+            };
+            
             if (selectedJob) {
-                await axios.put(`${API_UPDATE_URL}/${selectedJob.id}`, formData);
+                await axios.put(`${API_UPDATE_URL}/${selectedJob.id}`, dataToSend);
             } else {
-                await axios.post(API_CREATE_URL, formData);
+                await axios.post(API_CREATE_URL, dataToSend);
             }
             fetchJobs(currentPage, search);
             setShowModal(false);
