@@ -17,7 +17,7 @@ const JobUploadPage = () => {
         city: '',
         state: '',
         duration: '',
-        bill_rate: '',
+        // bill_rate: '',
         description: '',
     });
 
@@ -72,7 +72,7 @@ const JobUploadPage = () => {
             city: job.city,
             state: job.state,
             duration: job.duration,
-            bill_rate: job.bill_rate,
+            // bill_rate: job.bill_rate,
             description: job.description,
         });
         setShowModal(true);
@@ -85,7 +85,7 @@ const JobUploadPage = () => {
             city: '',
             state: '',
             duration: '',
-            bill_rate: '',
+            // bill_rate: '',
             description: '',
         });
         setShowModal(true);
@@ -169,7 +169,7 @@ const JobUploadPage = () => {
                                         <th>City</th>
                                         <th>State</th>
                                         <th>Duration</th>
-                                        <th>Bill Rate</th>
+                                        {/* <th>Bill Rate</th> */}
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -181,7 +181,7 @@ const JobUploadPage = () => {
                                                 <td>{job.city}</td>
                                                 <td>{job.state}</td>
                                                 <td>{job.duration}</td>
-                                                <td>DOE</td>
+                                                {/* <td>{job.bill_rate}</td> */}
                                                 <td>
                                                     <button
                                                         className="btn btn-warning me-2"
@@ -200,7 +200,7 @@ const JobUploadPage = () => {
                                         ))
                                     ) : (
                                         <tr>
-                                            <td colSpan="6" className="text-center">
+                                            <td colSpan="5" className="text-center">
                                                 No jobs found.
                                             </td>
                                         </tr>
@@ -308,7 +308,7 @@ const JobUploadPage = () => {
                                                 required
                                             />
                                         </div>
-                                        <div className="mb-3">
+                                        {/* <div className="mb-3">
                                             <label className="form-label">Bill Rate</label>
                                             <input
                                                 type="text"
@@ -318,7 +318,7 @@ const JobUploadPage = () => {
                                                 onChange={handleFormChange}
                                                 required
                                             />
-                                        </div>
+                                        </div> */}
                                         <div className="mb-3">
                                             <label className="form-label">Description</label>
                                             <textarea

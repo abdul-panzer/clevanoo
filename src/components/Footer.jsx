@@ -31,7 +31,7 @@ const Footer = () => {
             <h5 className="fw-bold mb-3">Contact</h5>
             <ul className="list-unstyled">
               <li className="mb-2">
-                <strong>Email:</strong> <a className="text-white" href="mailto:info@clevanoollc.com">info@clevanoollc.com</a>
+                <strong>Email:</strong> <a className="text-white" href="mailto:info@clevanoo.com">info@clevanoo.com</a>
               </li>
               <li className="mb-2">
                 <strong>Call:</strong> (949) 570-4008
