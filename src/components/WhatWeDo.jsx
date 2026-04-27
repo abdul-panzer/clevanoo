@@ -1,6 +1,6 @@
 import React from "react";
 
-import "./WhatWeDo.css";
+import "../WhatWeDo.css";
 
 const services = [
     {
@@ -34,9 +34,12 @@ const WhatWeDo = () => {
         <section className="what-we-do py-5">
             <div className="container">
                 <div className="text-center mb-5">
-                    <h2 className="display-6 fw-bold text-dark mb-3">What We Do</h2>
+                    <button className="btn border-button-design-black px-4 py-2 mb-3 text-black">
+                        What We Do
+                    </button>
+                    <h2 className="display-6 fw-bold text-dark mb-3">Our Services</h2>
                 </div>
-                <div className="row g-0">
+                <div className="row g-4">
                     {services.map((service, index) => (
                         <div className="col-lg-3 col-md-6" key={index}>
                             <div
@@ -44,7 +47,7 @@ const WhatWeDo = () => {
                                 style={{ backgroundImage: `url(${service.image})` }}
                             >
                                 <div className="overlay" />
-                                <div className={`content text-white p-4 text-center d-flex ${index % 2 === 0 ? "flex-column" : "flex-column-reverse"} h-100 justify-content-between`}>
+                                <div className="content text-white">
                                     <div className="service-number display-6 fw-light">
                                         {service.number}
                                     </div>

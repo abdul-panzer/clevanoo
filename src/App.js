@@ -9,6 +9,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 // Import page components
 import HomePage from "./pages/HomePage";
+import ServicesPage from "./pages/ServicesPage";
+import IndustriesPage from "./pages/IndustriesPage";
 import Aboutus from "../src/components/About";
 import WhatMakesUs from "../src/components/WhatMakesUs";
 import OurApproach from "../src/components/OurApproach";
@@ -61,9 +63,15 @@ function App() {
               path="/services"
               element={
                 <>
-                  <OurApproach />
-                  <OurMission />
-                  <WhatWeDo />
+                  <ServicesPage />
+                </>
+              }
+            />
+            <Route
+              path="/industries"
+              element={
+                <>
+                  <IndustriesPage />
                 </>
               }
             />

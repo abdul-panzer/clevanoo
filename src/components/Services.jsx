@@ -3,8 +3,8 @@ import content from "../content";
 
 const Services = () => {
   return (
-    <section id="services" className="py-5 bg-light">
-      <div className="container">
+    <section id="services" className="py-5 bg-light mt-4">
+      <div className="container mt-4">
         <h2 className="text-center mb-4" data-aos="fade-up">
           What We Do
         </h2>

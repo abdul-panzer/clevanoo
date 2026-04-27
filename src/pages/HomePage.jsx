@@ -6,13 +6,14 @@ import OurApproach from "../components/OurApproach";
 import OurMission from "../components/OurMission";
 import WhatWeDo from "../components/WhatWeDo";
 import JobCategories from "../components/JobCategories";
+import AICybersecurityServices from "../components/AICybersecurityServices";
 import NewJobs from "../components/NewJobs";
 import JobGallery from "../components/JobGallery";
 import CareerTips from "../components/CareerTips";
 import Testimonials from "../components/Testimonials";
 import LetsBuildTogeather from "../components/LetsBuildTogeather";
-import Subscription from "../components/Subscription";
-import Contactus from "../components/Contact";
+// import Subscription from "../components/Subscription";
+// import Contactus from "../components/Contact";
 
 const HomePage = () => (
   <>
@@ -23,6 +24,7 @@ const HomePage = () => (
     <OurMission />
     <WhatWeDo />
     <JobCategories />
+    <AICybersecurityServices />
     <NewJobs />
     <JobGallery />
     <CareerTips />

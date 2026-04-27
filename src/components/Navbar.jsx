@@ -55,6 +55,11 @@ const Navbar = () => {
               </Link>
             </li>
             <li className="nav-item">
+              <Link className={`nav-link d-flex align-items-center ${getActiveClass('/industries')}`} to="/industries" onClick={closeMenu}>
+                Industries
+              </Link>
+            </li>
+            <li className="nav-item">
               <Link className={`nav-link d-flex align-items-center ${getActiveClass('/speciality')}`} to="/speciality" onClick={closeMenu}>
                 Specialities
               </Link>
