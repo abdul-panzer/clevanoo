@@ -228,10 +228,10 @@ const DirectHireContractServices = () => {
                               <i className={`fas ${category.icon} primary-color me-3 mt-1`}></i>
                               <div className="flex-grow-1">
                                 <h6 className="fw-bold text-dark mb-2">{category.title}</h6>
-                                <div className="small text-muted">
+                                <div className="small text-muted" style={{ wordWrap: 'break-word', overflowWrap: 'break-word' }}>
                                   {category.items.map((item, itemIndex) => (
-                                    <span key={itemIndex}>
-                                      {itemIndex > 0 && <span className="mx-2">•</span>}
+                                    <span key={itemIndex} className="d-inline-block me-2 mb-1">
+                                      {itemIndex > 0 && <span className="mx-1">•</span>}
                                       {item}
                                     </span>
                                   ))}
