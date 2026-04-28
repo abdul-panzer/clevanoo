@@ -123,10 +123,10 @@ const DirectHireContractServices = () => {
                 </ul>
 
                 <div className="mt-auto">
-                  <button className="btn pill-button-design btn-lg">
+                  <Link to="/contact" className="btn pill-button-design btn-lg text-decoration-none">
                     <span className="rounded-pill"></span>
                     <span className="btn-text text-black">Hire Permanent Talent Today</span>
-                  </button>
+                  </Link>
                 </div>
               </div>
             </div>
@@ -175,10 +175,10 @@ const DirectHireContractServices = () => {
                 </ul>
 
                 <div className="mt-auto">
-                  <button className="btn pill-button-design btn-lg">
+                  <Link to="/contact" className="btn pill-button-design btn-lg text-decoration-none">
                     <span className="rounded-pill"></span>
                     <span className="btn-text text-black">Hire Contract Talent Now</span>
-                  </button>
+                  </Link>
                 </div>
               </div>
             </div>

@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const AICybersecurityServices = () => {
   return (
@@ -85,9 +86,9 @@ const AICybersecurityServices = () => {
                   </div>
 
                   <div className="d-grid">
-                    <button className="btn btn-primary btn-lg">
+                    <Link to="/contact" className="btn btn-primary btn-lg text-decoration-none">
                       Hire AI Talent Today
-                    </button>
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -153,9 +154,9 @@ const AICybersecurityServices = () => {
                   </div>
 
                   <div className="d-grid">
-                    <button className="btn btn-primary btn-lg">
+                    <Link to="/contact" className="btn btn-primary btn-lg text-decoration-none">
                       Hire Security Experts Now
-                    </button>
+                    </Link>
                   </div>
                 </div>
               </div>

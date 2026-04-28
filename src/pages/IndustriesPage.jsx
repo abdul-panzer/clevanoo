@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const IndustriesPage = () => {
   const industries = [
@@ -131,7 +132,7 @@ const IndustriesPage = () => {
                   <h4 className="card-title fw-bold mb-3">{industry.title}</h4>
                   <p className="text-muted small mb-4">{industry.description}</p>
                 </div>
-                
+
                 <div className="industry-list">
                   <h6 className="primary-color mb-3">Key Sectors:</h6>
                   <ul className="list-unstyled small">
@@ -187,10 +188,10 @@ const IndustriesPage = () => {
                         Connect with our industry experts to discover how we can help you find the perfect talent match for your specific sector.
                       </p>
                       <div className="d-grid gap-2 d-md-flex justify-content-md-center">
-                        <button className="btn pill-button-design">
+                        <Link to="/contact" className="btn pill-button-design btn-lg text-decoration-none">
                           <span className="rounded-pill"></span>
                           <span className="btn-text text-black">Speak with an Expert</span>
-                        </button>
+                        </Link>
                         {/* <button className="btn border-button-design-black text-black">
                           Download Industry Guide
                         </button> */}
