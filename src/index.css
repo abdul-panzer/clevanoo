@@ -360,14 +360,20 @@ footer {
     }
 
     .services-dropdown .nav-link {
-        justify-content: center;
+        justify-content: flex-start;
         width: 100%;
+        text-align: left;
     }
 
     .services-dropdown .dropdown-menu {
         background: transparent;
         box-shadow: none;
-        text-align: center;
+        text-align: left;
+    }
+
+    .services-dropdown .dropdown-item {
+        padding-left: 1rem;
+        color: var(--nav-link);
     }
 
     .hero-content {
