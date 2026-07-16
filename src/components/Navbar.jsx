@@ -1,18 +1,22 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [navbarClass, setNavbarClass] = useState("navbar-dark");
+  const [isServicesOpen, setIsServicesOpen] = useState(false);
   const location = useLocation();
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
 
+  const toggleServicesDropdown = () => {
+    setIsServicesOpen(!isServicesOpen);
+  };
+
   const closeMenu = () => {
     setIsOpen(false);
+    setIsServicesOpen(false);
   };
 
   const isActiveLink = (path) => {
@@ -49,10 +53,28 @@ const Navbar = () => {
                 About
               </Link>
             </li>
-            <li className="nav-item">
-              <Link className={`nav-link d-flex align-items-center ${getActiveClass('/services')}`} to="/services" onClick={closeMenu}>
+            <li className={`nav-item dropdown services-dropdown ${isServicesOpen ? 'show' : ''}`}>
+              <button
+                className={`nav-link dropdown-toggle d-flex align-items-center ${isActiveLink('/services') || isActiveLink('/zendesk') ? 'active-nav-link' : ''}`}
+                type="button"
+                id="servicesDropdown"
+                onClick={toggleServicesDropdown}
+                aria-expanded={isServicesOpen}
+              >
                 Services
-              </Link>
+              </button>
+              <ul className={`dropdown-menu ${isServicesOpen ? 'show' : ''}`} aria-labelledby="servicesDropdown">
+                <li>
+                  <Link className={`dropdown-item ${getActiveClass('/services')}`} to="/services" onClick={closeMenu}>
+                    Our Services
+                  </Link>
+                </li>
+                <li>
+                  <Link className={`dropdown-item ${getActiveClass('/zendesk')}`} to="/zendesk" onClick={closeMenu}>
+                    Zendesk
+                  </Link>
+                </li>
+              </ul>
             </li>
             <li className="nav-item">
               <Link className={`nav-link d-flex align-items-center ${getActiveClass('/industries')}`} to="/industries" onClick={closeMenu}>

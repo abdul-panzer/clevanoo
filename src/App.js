@@ -23,6 +23,7 @@ import JobsPage from "./pages/JobsPage";
 import JobDetailPage from './pages/JobDetailPage';
 import JobUploadPage from './pages/JobUploadPage';
 import SpecialityPage from './pages/SpecialityPage';
+import PortfolioPage from "./pages/PortfolioPage";
 
 function App() {
   useEffect(() => {
@@ -72,6 +73,14 @@ function App() {
               element={
                 <>
                   <IndustriesPage />
+                </>
+              }
+            />
+            <Route
+              path="/zendesk"
+              element={
+                <>
+                  <PortfolioPage />
                 </>
               }
             />
