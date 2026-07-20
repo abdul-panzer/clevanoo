@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "./PortfolioPage.css";
 
@@ -333,6 +333,24 @@ const engagementModels = [
 
 const PortfolioPage = () => {
   const [activeCategory, setActiveCategory] = useState("All");
+  const [isPageLoaded, setIsPageLoaded] = useState(false);
+
+  useEffect(() => {
+    if (document.readyState === "complete") {
+      setIsPageLoaded(true);
+      return;
+    }
+
+    const handleWindowLoad = () => {
+      setIsPageLoaded(true);
+    };
+
+    window.addEventListener("load", handleWindowLoad, { once: true });
+
+    return () => {
+      window.removeEventListener("load", handleWindowLoad);
+    };
+  }, []);
 
   const categories = [
     "All",
@@ -411,6 +429,34 @@ const PortfolioPage = () => {
             alt="Zendesk consulting services"
             data-aos="fade-up"
           />
+        </div>
+      </section>
+
+      {/* Portfolio Video */}
+      <section className="portfolio-video-section section-padding">
+        <div className="container">
+          <div className="portfolio-section-heading text-center">
+            <span className="portfolio-section-label">Zendesk Portfolio</span>
+
+            <h2 className="portfolio-section-title">
+              See the customer support experience in motion
+            </h2>
+          </div>
+
+          <div className="portfolio-video-frame" data-aos="fade-up">
+            {isPageLoaded && (
+              <video
+                className="portfolio-video"
+                src="/assets/videos/zendesk-animated-portfolio.mp4"
+                muted
+                autoPlay
+                playsInline
+                loop
+                preload="auto"
+                aria-label="Zendesk animated portfolio"
+              />
+            )}
+          </div>
         </div>
       </section>
 

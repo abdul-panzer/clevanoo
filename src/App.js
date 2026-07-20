@@ -24,6 +24,7 @@ import JobDetailPage from './pages/JobDetailPage';
 import JobUploadPage from './pages/JobUploadPage';
 import SpecialityPage from './pages/SpecialityPage';
 import PortfolioPage from "./pages/PortfolioPage";
+import CaseStudiesPage from "./pages/CaseStudiesPage";
 
 function App() {
   useEffect(() => {
@@ -81,6 +82,14 @@ function App() {
               element={
                 <>
                   <PortfolioPage />
+                </>
+              }
+            />
+            <Route
+              path="/case-studies"
+              element={
+                <>
+                  <CaseStudiesPage />
                 </>
               }
             />

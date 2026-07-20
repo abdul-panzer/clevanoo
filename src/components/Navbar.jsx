@@ -55,7 +55,7 @@ const Navbar = () => {
             </li>
             <li className={`nav-item dropdown services-dropdown ${isServicesOpen ? 'show' : ''}`}>
               <button
-                className={`nav-link dropdown-toggle d-flex align-items-center ${isActiveLink('/services') || isActiveLink('/zendesk') ? 'active-nav-link' : ''}`}
+                className={`nav-link dropdown-toggle d-flex align-items-center ${isActiveLink('/services') || isActiveLink('/zendesk') || isActiveLink('/case-studies') ? 'active-nav-link' : ''}`}
                 type="button"
                 id="servicesDropdown"
                 onClick={toggleServicesDropdown}
@@ -72,6 +72,11 @@ const Navbar = () => {
                 <li>
                   <Link className={`dropdown-item ${getActiveClass('/zendesk')}`} to="/zendesk" onClick={closeMenu}>
                     Zendesk
+                  </Link>
+                </li>
+                <li>
+                  <Link className={`dropdown-item ${getActiveClass('/case-studies')}`} to="/case-studies" onClick={closeMenu}>
+                    Zendesk Case Studies
                   </Link>
                 </li>
               </ul>
