@@ -72,6 +72,13 @@ const SpecialityPage = () => {
       description: "Advises organizations on securing digital and AI-driven systems, assessing vulnerabilities, designing defenses, and aligning security strategies with evolving threat landscapes.",
       image: "https://images.unsplash.com/photo-1563013544-824ae1b704d3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
       skills: ["Security Assessment", "Penetration Testing", "Incident Response", "Security Architecture", "Compliance"]
+    },
+    {
+      icon: "fas fa-gavel",
+      title: "Legal Professionals",
+      description: "Connects organizations with qualified legal talent, including attorneys, associates, paralegals, and legal support professionals for law firms and corporate legal teams.",
+      image: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+      skills: ["Attorneys", "Legal Associates", "Paralegals", "Legal Research", "Contract Review"]
     }
   ];
 
@@ -80,8 +87,8 @@ const SpecialityPage = () => {
       <div className="text-center mb-5">
         <h1 className="display-4 fw-bold mb-4">Our Specialities</h1>
         <p className="lead">
-          We bring together a multidisciplinary team of AI and cloud specialists focused on building secure, scalable, and production-ready artificial intelligence solutions. 
-          Our expertise spans the full AI lifecycle-from data engineering and machine learning to LLM applications, MLOps, governance, and security. We design, deploy, and operate AI systems that are reliable, compliant, and aligned with real business outcomes. With strong cloud infrastructure foundations and a product-driven mindset, we bridge innovation and execution. Guided by a passion for excellence, we aim to create responsible, impactful, and inspiring AI experiences.
+          We bring together specialized talent across high-demand fields, including AI, cloud, cybersecurity, and legal staffing.
+          Our expertise spans the full AI lifecycle-from data engineering and machine learning to LLM applications, MLOps, governance, and security-while also supporting law firms and corporate legal teams with attorneys, associates, paralegals, and legal support professionals. Guided by a passion for excellence, we help organizations find reliable, skilled professionals aligned with real business outcomes.
         </p>
       </div>
       
@@ -128,7 +135,7 @@ const SpecialityPage = () => {
       </div>
       
       <div className="text-center mt-5 p-5 bg-light rounded-3">
-        <h3 className="mb-4">Ready to Advance Your Career in AI?</h3>
+        <h3 className="mb-4">Ready to Advance Your Career?</h3>
         <p className="lead mb-4">
           Join thousands of professionals who have found their dream jobs through our platform.
         </p>

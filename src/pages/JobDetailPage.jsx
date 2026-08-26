@@ -4,6 +4,7 @@ import axios from 'axios';
 import emailjs from '@emailjs/browser';
 
 const JOB_DETAIL_URL = 'https://clevanoo.com/backend/public/api/jobs';
+const RESUME_STORAGE_URL = 'https://clevanoo.com/backend/storage/app/public';
 
 const JobDetailPage = () => {
   const { id } = useParams();
@@ -109,7 +110,7 @@ const JobDetailPage = () => {
         { headers: { 'Content-Type': 'multipart/form-data' } }
       );
 
-      const resumeUrl = `https://clevanoo.com/backend/public/storage/${response.data.resume_path}`;
+      const resumeUrl = `${RESUME_STORAGE_URL}/${response.data.resume_path}`;
 
       const emailPayload = {
         message: `A new candidate has applied for ${job.jobtitle}.\n\nResume Link: ${resumeUrl}`,
