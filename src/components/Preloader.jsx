@@ -11,7 +11,7 @@ const Preloader = ({ message = "Loading..." }) => {
       </div>
       <p className="preloader-text">{message}</p>
       
-      <style jsx>{`
+      <style>{`
         .preloader-container {
           display: flex;
           flex-direction: column;
@@ -106,3 +106,4 @@ const Preloader = ({ message = "Loading..." }) => {
 };
 
 export default Preloader;
+

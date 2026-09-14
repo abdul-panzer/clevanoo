@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
+    <meta name="format-detection" content="telephone=no,address=no,email=no,date=no,url=no">
     <title>{{ $subjectLine }}</title>
 </head>
 <body style="margin:0;padding:0;background:#eef4f8;color:#1c2630;font-family:Arial,Helvetica,sans-serif;">
@@ -58,13 +59,12 @@
                                 <tr>
                                     <td style="padding:22px 24px;color:#ffffff;font-size:14px;line-height:1.75;">
                                         <strong style="color:#ffffff;font-size:16px;">Clevanoo LLC</strong><br>
-                                        <span style="color:#d8e8ef;">Suite 262, 12800 Westridge Blvd, Frisco, TX 75035</span><br>
-                                        <span style="color:#d8e8ef;">IT staffing, recruitment, consulting, and technology solutions</span><br>
-                                        <a href="mailto:info@clevanoo.com" style="color:#80E1FC;text-decoration:none;">info@clevanoo.com</a>
+                                        <a href="https://www.google.com/maps/search/?api=1&query=Suite%20262%2C%2012800%20Westridge%20Blvd%2C%20Frisco%2C%20TX%2075035" target="_blank" style="color:#d8e8ef !important;text-decoration:none !important;border-bottom:0 !important;display:inline;">Suite 262, 12800 Westridge Blvd, Frisco, TX 75035</a><br>
+                                        <a href="mailto:info@clevanoo.com" style="color:#80E1FC !important;text-decoration:none !important;border-bottom:0 !important;display:inline;">info@clevanoo.com</a>
                                         <span style="color:#80E1FC;"> | </span>
-                                        <span style="color:#d8e8ef;">(949) 570-4008</span>
+                                        <a href="tel:+19495704008" target="_blank" style="color:#80E1FC !important;text-decoration:none !important;border-bottom:0 !important;display:inline;">(949) 570-4008</a>
                                         <span style="color:#80E1FC;"> | </span>
-                                        <a href="{{ $brandUrl }}" style="color:#80E1FC;text-decoration:none;">clevanoo.com</a>
+                                        <a href="{{ $brandUrl }}" style="color:#80E1FC !important;text-decoration:none !important;border-bottom:0 !important;display:inline;">clevanoo.com</a>
                                     </td>
                                 </tr>
                             </table>
@@ -76,3 +76,6 @@
     </table>
 </body>
 </html>
+
+
+
