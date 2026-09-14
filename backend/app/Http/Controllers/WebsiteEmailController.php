@@ -10,10 +10,6 @@ use Throwable;
 
 class WebsiteEmailController extends Controller
 {
-    public function __construct(private WebsiteEmailService $websiteEmailService)
-    {
-    }
-
     public function send(Request $request): JsonResponse
     {
         $validated = $request->validate([
@@ -25,12 +21,14 @@ class WebsiteEmailController extends Controller
         ]);
 
         try {
-            $this->websiteEmailService->send($validated['type'], $validated);
+            app(WebsiteEmailService::class)->send($validated['type'], $validated);
         } catch (Throwable $exception) {
             report($exception);
 
             return response()->json([
-                'error' => 'Failed to send email. Please try again later.',
+                'error' => config('app.debug')
+                    ? $exception->getMessage()
+                    : 'Failed to send email. Please try again later.',
             ], 500);
         }
 

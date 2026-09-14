@@ -21,7 +21,7 @@ const Subscription = () => {
       setEmail("");
     } catch (error) {
       console.error("Laravel email error:", error);
-      setFormStatus("Failed to subscribe. Please try again later.");
+      setFormStatus(error.response?.data?.error || "Failed to subscribe. Please try again later.");
     } finally {
       setSubmitting(false);
     }

@@ -37,6 +37,9 @@ return [
 
     'website_mail' => [
         'to' => env('WEBSITE_MAIL_TO', env('MAIL_FROM_ADDRESS')),
+        'logo_url' => env('WEBSITE_LOGO_URL', 'https://clevanoo.com/logo.png'),
+        'brand_url' => env('WEBSITE_BRAND_URL', 'https://clevanoo.com'),
+        'resume_base_url' => env('WEBSITE_RESUME_BASE_URL'),
     ],
 
 ];

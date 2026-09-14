@@ -21,7 +21,7 @@ const ContactPage = () => {
       form.reset();
     } catch (error) {
       console.error("Laravel email error:", error);
-      setFormStatus("Failed to send message. Please try again later.");
+      setFormStatus(error.response?.data?.error || "Failed to send message. Please try again later.");
     }
   };
 

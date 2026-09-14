@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Preloader from './Preloader';
+import API_BASE_URL from '../config/api';
 
 const JobsDataCards = () => {
     const [jobs, setJobs] = useState([]);
@@ -11,7 +12,7 @@ const JobsDataCards = () => {
     const [perPage, setPerPage] = useState(6);
     const [currentPage, setCurrentPage] = useState(1);
 
-    const API_URL = 'https://clevanoo.com/backend/public/api/all-jobs';
+    const API_URL = `${API_BASE_URL}/all-jobs`;
 
     const fetchJobs = async (page, size = perPage, searchTerm = search) => {
         setLoading(true);

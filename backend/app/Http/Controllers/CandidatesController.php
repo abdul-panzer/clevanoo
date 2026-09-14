@@ -76,7 +76,7 @@ class CandidatesController extends Controller
                 ], 500);
             }
 
-            $resumeUrl = url('storage/' . $resumePath);
+            $resumeUrl = $this->resumeDownloadUrl(basename($resumePath));
 
             try {
                 $this->websiteEmailService->send('candidate_application', [
@@ -87,7 +87,9 @@ class CandidatesController extends Controller
                 Log::error('Candidate notification email failed: ' . $e->getMessage());
 
                 return response()->json([
-                    'error' => 'Candidate saved, but failed to send notification email.',
+                    'error' => config('app.debug')
+                        ? 'Candidate saved, but failed to send notification email: ' . $e->getMessage()
+                        : 'Candidate saved, but failed to send notification email.',
                     'resume_path' => $resumePath,
                 ], 500);
             }
@@ -108,5 +110,28 @@ class CandidatesController extends Controller
                 'error' => 'An unexpected error occurred.',
             ], 500);
         }
+    }
+
+    public function downloadResume(string $filename)
+    {
+        $filename = basename($filename);
+        $path = 'resumes/' . $filename;
+
+        if (! Storage::disk('public')->exists($path)) {
+            abort(404);
+        }
+
+        return Storage::disk('public')->download($path, $filename);
+    }
+
+    private function resumeDownloadUrl(string $filename): string
+    {
+        $baseUrl = config('services.website_mail.resume_base_url');
+
+        if ($baseUrl) {
+            return rtrim($baseUrl, '/') . '/' . rawurlencode($filename);
+        }
+
+        return url('api/resumes/' . rawurlencode($filename));
     }
 }

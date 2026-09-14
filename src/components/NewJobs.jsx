@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import API_BASE_URL from "../config/api";
 
 const NewJobs = () => {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState('');
-  const API_URL = 'https://clevanoo.com/backend/public/api/all-jobs';
+  const API_URL = `${API_BASE_URL}/all-jobs`;
   const navigate = useNavigate();
 
   // Fetch jobs when component mounts

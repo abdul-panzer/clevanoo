@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Mail\WebsiteNotificationMail;
+use App\Support\WebsiteEmailDebug;
 use Illuminate\Support\Facades\Mail;
 use InvalidArgumentException;
 
@@ -45,7 +46,7 @@ class WebsiteEmailService
                 'position_applied_for' => 'Position Applied For',
                 'visa_type' => 'Visa Type',
                 'state' => 'State',
-                'resume_url' => 'Resume Link',
+                'resume_url' => 'Resume',
                 'message' => 'Message',
             ],
         ],
@@ -53,6 +54,13 @@ class WebsiteEmailService
 
     public function send(string $type, array $data): void
     {
+        if ($this->shouldDebug($type)) {
+            WebsiteEmailDebug::step('service entered', [
+                'type' => $type,
+                'data_keys' => array_keys($data),
+            ]);
+        }
+
         if (! array_key_exists($type, self::TYPES)) {
             throw new InvalidArgumentException("Unsupported website email type [{$type}].");
         }
@@ -66,8 +74,19 @@ class WebsiteEmailService
         $replyTo = filter_var($data['email'] ?? null, FILTER_VALIDATE_EMAIL) ?: null;
         $replyToName = $data['name'] ?? trim(($data['first_name'] ?? '') . ' ' . ($data['last_name'] ?? ''));
         $replyToName = $replyToName !== '' ? $replyToName : null;
+        $recipient = $this->recipient();
 
-        Mail::to($this->recipient())->send(
+        if ($this->shouldDebug($type)) {
+            WebsiteEmailDebug::step('mail object prepared', [
+                'type' => $type,
+                'subject' => $definition['subject'],
+                'recipient' => $recipient,
+                'reply_to' => $replyTo,
+                'field_count' => count($payload['fields']),
+            ]);
+        }
+
+        Mail::to($recipient)->send(
             new WebsiteNotificationMail(
                 type: $type,
                 subjectLine: $definition['subject'],
@@ -76,6 +95,13 @@ class WebsiteEmailService
                 replyToName: $replyToName,
             )
         );
+
+        if ($this->shouldDebug($type)) {
+            WebsiteEmailDebug::step('mail facade send returned', [
+                'type' => $type,
+                'recipient' => $recipient,
+            ]);
+        }
     }
 
     private function recipient(): string
@@ -103,5 +129,10 @@ class WebsiteEmailService
         }
 
         return $formatted;
+    }
+
+    private function shouldDebug(string $type): bool
+    {
+        return in_array($type, ['contact', 'unsubscribe', 'subscription'], true);
     }
 }
