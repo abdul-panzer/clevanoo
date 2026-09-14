@@ -1,13 +1,30 @@
 import React, { useState } from "react";
+import sendWebsiteEmail from "../services/websiteEmail";
 
 const Subscription = () => {
   const [email, setEmail] = useState("");
+  const [formStatus, setFormStatus] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle subscription logic here
-    console.log("Subscribing email:", email);
-    setEmail("");
+    setSubmitting(true);
+    setFormStatus("");
+
+    try {
+      await sendWebsiteEmail({
+        type: "subscription",
+        email,
+      });
+
+      setFormStatus("Subscription request sent successfully!");
+      setEmail("");
+    } catch (error) {
+      console.error("Laravel email error:", error);
+      setFormStatus("Failed to subscribe. Please try again later.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -42,9 +59,12 @@ const Subscription = () => {
                   required
                 />
                 <button type="submit" className="btn btn-primary btn-lg px-4">
-                  Enter
+                  {submitting ? "Sending..." : "Enter"}
                 </button>
               </form>
+              {formStatus && (
+                <div className="mt-3 alert alert-info">{formStatus}</div>
+              )}
             </div>
           </div>
         </div>

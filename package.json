@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@emailjs/browser": "^4.4.1",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@fontsource/jost": "^5.2.6",
@@ -19,10 +18,8 @@
     "body-parser": "^2.2.0",
     "bootstrap": "^5.3.8",
     "dotenv": "^17.2.1",
-    "emailjs": "^4.0.3",
     "express": "^5.1.0",
     "framer-motion": "^12.23.12",
-    "nodemailer": "^7.0.5",
     "react": "^19.1.1",
     "react-data-table-component": "^7.7.0",
     "react-dom": "^19.1.1",

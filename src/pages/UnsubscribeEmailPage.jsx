@@ -1,27 +1,28 @@
 import React, { useState } from "react";
-import emailjs from "@emailjs/browser";
+import sendWebsiteEmail from "../services/websiteEmail";
 
 const ContactPage = () => {
     const [formStatus, setFormStatus] = useState("");
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
+        const form = e.target;
+        const formData = new FormData(form);
 
-        emailjs
-            .sendForm(
-                "service_8xhle0y",
-                "template_pjgowmj",
-                e.target,
-                "6EHvX32o3dXV9nT81"
-            )
-            .then(() => {
-                setFormStatus("We have received your request and you will be removed from our database within 24 hours.");
-                e.target.reset();
-            })
-            .catch((error) => {
-                console.error("EmailJS error:", error);
-                setFormStatus("Failed to send message. Please try again later.");
+        try {
+            await sendWebsiteEmail({
+                type: "unsubscribe",
+                name: formData.get("name"),
+                email: formData.get("email"),
+                phone: formData.get("phone"),
             });
+
+            setFormStatus("We have received your request and you will be removed from our database within 24 hours.");
+            form.reset();
+        } catch (error) {
+            console.error("Laravel email error:", error);
+            setFormStatus("Failed to send message. Please try again later.");
+        }
     };
 
     return (

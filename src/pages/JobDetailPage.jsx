@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import emailjs from '@emailjs/browser';
+import API_BASE_URL from '../config/api';
 
-const JOB_DETAIL_URL = 'https://clevanoo.com/backend/public/api/jobs';
-const RESUME_STORAGE_URL = 'https://clevanoo.com/backend/storage/app/public';
+const JOB_DETAIL_URL = `${API_BASE_URL}/jobs`;
 
 const JobDetailPage = () => {
   const { id } = useParams();
@@ -20,6 +19,7 @@ const JobDetailPage = () => {
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
+    email: '',
     phone: '',
     visaType: '',
     state: '',
@@ -59,8 +59,11 @@ const JobDetailPage = () => {
     let tempErrors = {};
     if (!formData.firstName.trim()) tempErrors.firstName = 'First name is required';
     if (!formData.lastName.trim()) tempErrors.lastName = 'Last name is required';
+    if (!formData.email.trim()) tempErrors.email = 'Email is required';
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim()))
+      tempErrors.email = 'Email is invalid';
     if (!formData.phone.trim()) tempErrors.phone = 'Phone is required';
-    else if (!/^\+?[\d\s\-]{7,15}$/.test(formData.phone.trim()))
+    else if (!/^\+?[\d\s-]{7,15}$/.test(formData.phone.trim()))
       tempErrors.phone = 'Phone number is invalid';
     if (!formData.resume) tempErrors.resume = 'Resume file is required';
     setErrors(tempErrors);
@@ -95,6 +98,7 @@ const JobDetailPage = () => {
     const formDataToSend = new FormData();
     formDataToSend.append('first_name', formData.firstName);
     formDataToSend.append('last_name', formData.lastName);
+    formDataToSend.append('email', formData.email);
     formDataToSend.append('phone', formData.phone);
     formDataToSend.append('position_applied_for', job.jobtitle);
     formDataToSend.append('resume', formData.resume);
@@ -104,30 +108,18 @@ const JobDetailPage = () => {
     if (formData.message.trim()) formDataToSend.append('message', formData.message.trim());
 
     try {
-      const response = await axios.post(
-        'https://clevanoo.com/backend/public/api/save-candidates',
+      await axios.post(
+        `${API_BASE_URL}/save-candidates`,
         formDataToSend,
         { headers: { 'Content-Type': 'multipart/form-data' } }
       );
 
-      const resumeUrl = `${RESUME_STORAGE_URL}/${response.data.resume_path}`;
-
-      const emailPayload = {
-        message: `A new candidate has applied for ${job.jobtitle}.\n\nResume Link: ${resumeUrl}`,
-      };
-
-      await emailjs.send(
-        'service_n7jxnhk',
-        'template_bfll5t7',
-        emailPayload,
-        '6EHvX32o3dXV9nT81'
-      );
-
-      setFormStatus('Candidate submitted and email sent!');
+      setFormStatus('Candidate submitted successfully!');
       closeModal();
       setFormData({
         firstName: '',
         lastName: '',
+        email: '',
         phone: '',
         visaType: '',
         state: '',
@@ -243,6 +235,20 @@ const JobDetailPage = () => {
                           required
                         />
                         {errors.lastName && <div className="invalid-feedback">{errors.lastName}</div>}
+                      </div>
+
+                      <div className="mb-3">
+                        <label htmlFor="email" className="form-label">Email*</label>
+                        <input
+                          type="email"
+                          className={`form-control ${errors.email ? 'is-invalid' : ''}`}
+                          id="email"
+                          name="email"
+                          value={formData.email}
+                          onChange={handleChange}
+                          required
+                        />
+                        {errors.email && <div className="invalid-feedback">{errors.email}</div>}
                       </div>
 
                       <div className="mb-3">
