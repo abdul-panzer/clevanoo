@@ -9,7 +9,7 @@ const Footer = () => {
           {/* LOGO Column */}
           <div className="col-lg-3 col-md-6">
             <div className="mb-4">
-              <img className="img-fluid rounded m-auto d-table" alt="About Us" src="logo.png" />
+              <img className="img-fluid rounded m-auto d-table" alt="Clevanoo" src="logo.webp" width="125" height="53" loading="lazy" decoding="async" />
             </div>
           </div>
 

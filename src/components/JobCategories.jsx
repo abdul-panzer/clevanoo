@@ -3,28 +3,28 @@ import React from "react";
 const JobCategories = () => {
   const categories = [
     {
-      icon: "/assets/images/af.png",
+      icon: "/assets/images/af.webp",
       title: "Accounting / Finance",
       description: "Find your dream job in accounting and finance sector with top companies.",
-      image: "/assets/images/accounting-finance.png"
+      image: "/assets/images/accounting-finance.webp"
     },
     {
-      icon: "/assets/images/t.png",
+      icon: "/assets/images/t.webp",
       title: "Technology",
       description: "Explore exciting opportunities in the ever-evolving tech industry.",
-      image: "/assets/images/technology.png"
+      image: "/assets/images/technology.webp"
     },
     {
-      icon: "/assets/images/tc.png",
+      icon: "/assets/images/tc.webp",
       title: "Tele-communications",
       description: "Connect with leading telecom companies and advance your career.",
-      image: "/assets/images/tele-communications.png"
+      image: "/assets/images/tele-communications.webp"
     },
     {
-      icon: "/assets/images/h.png",
+      icon: "/assets/images/h.webp",
       title: "Healthcare",
       description: "Make a difference in healthcare with rewarding career opportunities.",
-      image: "/assets/images/healthcare.png"
+      image: "/assets/images/healthcare.webp"
     }
   ];
 
@@ -53,6 +53,8 @@ const JobCategories = () => {
                       className="rounded-circle"
                       width="50"
                       height="50" alt=""
+                      loading="lazy"
+                      decoding="async"
                     />
                   </div>
                   <div className="mb-3 d-flex flex-row align-items-center justify-content-between">
@@ -64,6 +66,8 @@ const JobCategories = () => {
                       width="60"
                       height="60"
                       style={{ objectFit: 'cover' }}
+                      loading="lazy"
+                      decoding="async"
                     />
                   </div>
                   <h5 className="card-title fw-bold mb-3">{category.title}</h5>

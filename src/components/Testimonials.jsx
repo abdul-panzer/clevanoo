@@ -5,13 +5,13 @@ const Testimonials = () => {
     {
       name: "K. Kishore",
       title: "Product Director",
-      image: "/assets/images/7.png",
+      image: "/assets/images/7.webp",
       text: "The job portal helped me find my dream position. The matching algorithm is incredibly accurate and the support team is always helpful."
     },
     {
       name: "Sarah Johnson",
       title: "Senior Developer",
-      image: "/assets/images/8.png",
+      image: "/assets/images/8.webp",
       text: "I was able to transition into a new role within weeks. The platform's user experience and job recommendations are outstanding."
     },
     {
@@ -29,10 +29,14 @@ const Testimonials = () => {
           <div className="col-lg-5 mb-5" data-aos="fade-right">
             <div className="text-center">
               <img
-                src="/assets/images/testimonials.png"
+                src="/assets/images/testimonials.webp"
                 alt="Happy Candidate"
                 className="img-fluid rounded"
                 style={{ maxWidth: '400px' }}
+                width="323"
+                height="323"
+                loading="lazy"
+                decoding="async"
               />
             </div>
           </div>
@@ -60,6 +64,8 @@ const Testimonials = () => {
                           width="50"
                           height="50"
                           style={{ objectFit: 'cover' }}
+                          loading="lazy"
+                          decoding="async"
                         />
                         <div>
                           <h6 className="mb-1 fw-bold">{testimonial.name}</h6>

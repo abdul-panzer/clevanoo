@@ -31,7 +31,7 @@ const Navbar = () => {
     <nav className={`navbar navbar-expand-lg fixed-top border-bottom`}>
       <div className="container">
         <Link className="navbar-brand fw-bold fs-4" to="/" onClick={closeMenu}>
-          <img className="img-fluid rounded m-auto d-table" alt="About Us" src="logo.png" width='125px' />
+          <img className="img-fluid rounded m-auto d-table" alt="Clevanoo" src="logo.webp" width="125" height="53" fetchPriority="high" decoding="async" />
         </Link>
         <button
           className="navbar-toggler"

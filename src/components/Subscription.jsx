@@ -32,7 +32,7 @@ const Subscription = () => {
       <div
         className="position-absolute w-100 h-100"
         style={{
-          backgroundImage: 'url("/assets/images/subscribe.png")',
+          backgroundImage: 'url("/assets/images/subscribe.webp")',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           filter: 'blur(3px)',

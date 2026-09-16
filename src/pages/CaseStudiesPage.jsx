@@ -271,7 +271,7 @@ const CaseStudiesPage = () => {
     <main className="case-studies-page">
       <section
         className="case-studies-hero"
-        style={{ "--case-studies-hero-image": "url('/assets/images/zendesk-image-1.png')" }}
+        style={{ "--case-studies-hero-image": "url('/assets/images/zendesk-image-1.webp')" }}
       >
         <div className="case-studies-hero-overlay"></div>
         <div className="container position-relative">

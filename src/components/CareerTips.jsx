@@ -5,22 +5,22 @@ const CareerTips = () => {
     {
       title: "Networking Strategies",
       description: "Build meaningful professional relationships that can open doors to new opportunities and career growth.",
-      image: "/assets/images/qt1.png"
+      image: "/assets/images/qt1.webp"
     },
     {
       title: "Resume Optimization",
       description: "Learn how to craft a compelling resume that stands out to recruiters and hiring managers.",
-      image: "/assets/images/qt2.png"
+      image: "/assets/images/qt2.webp"
     },
     {
       title: "Interview Preparation",
       description: "Master the art of interviewing with proven techniques and confidence-building strategies.",
-      image: "/assets/images/qt3.png"
+      image: "/assets/images/qt3.webp"
     },
     {
       title: "Skill Development",
       description: "Stay competitive by continuously upgrading your skills and staying current with industry trends.",
-      image: "/assets/images/qt4.png"
+      image: "/assets/images/qt4.webp"
     }
   ];
 
@@ -48,6 +48,10 @@ const CareerTips = () => {
                       alt={tip.title}
                       className="card-img-top"
                       style={{ height: '200px', objectFit: 'cover' }}
+                      width="462"
+                      height="303"
+                      loading="lazy"
+                      decoding="async"
                     />
                     <button className="position-absolute career-tips-readmore">Read More</button>
                   </div>

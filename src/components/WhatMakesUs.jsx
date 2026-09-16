@@ -7,7 +7,7 @@ const WhatMakesUs = () => {
             <div
                 className="position-absolute w-100 h-100"
                 style={{
-                    backgroundImage: 'url("/assets/images/latest-job-lisiting.jpg")',
+                    backgroundImage: 'url("/assets/images/latest-job-lisiting.webp")',
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
                     filter: 'blur(3px)',

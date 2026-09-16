@@ -7,7 +7,7 @@
 </head>
 <body style="margin:0;padding:0;background:#eef4f8;color:#1c2630;font-family:Arial,Helvetica,sans-serif;">
     @php
-        $logoUrl = config('services.website_mail.logo_url', 'https://clevanoo.com/logo.png');
+        $logoUrl = config('services.website_mail.logo_url', 'https://clevanoo.com/logo.webp');
         $brandUrl = config('services.website_mail.brand_url', 'https://clevanoo.com');
     @endphp
 

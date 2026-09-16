@@ -425,8 +425,12 @@ const PortfolioPage = () => {
         <div className="container">
           <img
             className="portfolio-hero-image"
-            src="/assets/images/zendesk-image-1.png"
+            src="/assets/images/zendesk-image-1.webp"
             alt="Zendesk consulting services"
+            width="1280"
+            height="720"
+            loading="lazy"
+            decoding="async"
             data-aos="fade-up"
           />
         </div>

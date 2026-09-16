@@ -5,22 +5,22 @@ const OurApproach = () => {
         {
             title: "Personalized Staffing Solutions",
             description: "Tailored to your specific technical needs and growth plans.",
-            image: "/assets/images/qt1.png"
+            image: "/assets/images/qt1.webp"
         },
         {
             title: "Access to Top Tech Talent",
             description: "From software engineers and cloud architects to data scientists and cybersecurity experts. ",
-            image: "/assets/images/qt2.png"
+            image: "/assets/images/qt2.webp"
         },
         {
             title: "Fast, Efficient Recruitment",
             description: "Leveraging AI-driven sourcing and an extensive professional network.",
-            image: "/assets/images/qt3.png"
+            image: "/assets/images/qt3.webp"
         },
         {
             title: "Relationship-Focused Partnerships",
             description: "We value relationships over transactions, ensuring trust, transparency, and long-term success.",
-            image: "/assets/images/qt4.png"
+            image: "/assets/images/qt4.webp"
         }
     ];
 
@@ -41,6 +41,10 @@ const OurApproach = () => {
                                             src={tip.image}
                                             alt={tip.title}
                                             className="card-img-top ourapproach-card shadow-lg"
+                                            width="462"
+                                            height="303"
+                                            loading="lazy"
+                                            decoding="async"
                                         />
                                     </div>
                                     <div className="p-4 d-flex flex-column justify-content-between">

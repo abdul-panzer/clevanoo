@@ -2,26 +2,26 @@ import React from "react";
 
 const JobGallery = () => {
   const galleryImagesTop = [
-    "/assets/images/1.png",
-    "/assets/images/2.png",
-    "/assets/images/3.png",
-    "/assets/images/4.png",
-    "/assets/images/5.png",
+    "/assets/images/1.webp",
+    "/assets/images/2.webp",
+    "/assets/images/3.webp",
+    "/assets/images/4.webp",
+    "/assets/images/5.webp",
   ];
 
   const galleryImagesBottom = [
-    "/assets/images/6.png",
-    "/assets/images/7.png",
-    "/assets/images/8.png",
-    "/assets/images/9.png",
-    "/assets/images/10.png",
+    "/assets/images/6.webp",
+    "/assets/images/7.webp",
+    "/assets/images/8.webp",
+    "/assets/images/9.webp",
+    "/assets/images/10.webp",
   ];
 
   const Track = ({ images }) => (
     <div className="marquee-track">
       {[...images, ...images].map((image, index) => (
         <div className="marquee-item" key={index}>
-          <img src={image} alt={`Professional ${index + 1}`} className="marquee-image" />
+          <img src={image} alt={`Professional ${index + 1}`} className="marquee-image" loading="lazy" decoding="async" />
           <div className="marquee-overlay">
             <div className="overlay-content">
               <h6 className="mb-2 fw-bold">Open Positions</h6>

@@ -7,7 +7,7 @@ const WhyChooseClevanoo = () => {
       <div
         className="position-absolute w-100 h-100"
         style={{
-          backgroundImage: 'url("/assets/images/ourmission.png")',
+          backgroundImage: 'url("/assets/images/ourmission.webp")',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           zIndex: 0

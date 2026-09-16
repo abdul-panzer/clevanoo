@@ -102,6 +102,8 @@ const SpecialityPage = () => {
                   className="card-img-top" 
                   alt={speciality.title}
                   style={{ height: "200px", objectFit: "cover" }}
+                  loading="lazy"
+                  decoding="async"
                 />
                 <div className="position-absolute top-50 start-50 translate-middle">
                   <div className="bg-white rounded-circle p-3 shadow-lg">
