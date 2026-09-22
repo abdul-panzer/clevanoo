@@ -4,24 +4,28 @@ const JobCategories = () => {
   const categories = [
     {
       icon: "/assets/images/af.webp",
+      iconAlt: "Accounting and finance jobs icon",
       title: "Accounting / Finance",
       description: "Find your dream job in accounting and finance sector with top companies.",
       image: "/assets/images/accounting-finance.webp"
     },
     {
       icon: "/assets/images/t.webp",
+      iconAlt: "Technology jobs icon",
       title: "Technology",
       description: "Explore exciting opportunities in the ever-evolving tech industry.",
       image: "/assets/images/technology.webp"
     },
     {
       icon: "/assets/images/tc.webp",
+      iconAlt: "Telecommunications jobs icon",
       title: "Tele-communications",
       description: "Connect with leading telecom companies and advance your career.",
       image: "/assets/images/tele-communications.webp"
     },
     {
       icon: "/assets/images/h.webp",
+      iconAlt: "Healthcare jobs icon",
       title: "Healthcare",
       description: "Make a difference in healthcare with rewarding career opportunities.",
       image: "/assets/images/healthcare.webp"
@@ -52,7 +56,8 @@ const JobCategories = () => {
                       src={category.icon}
                       className="rounded-circle"
                       width="50"
-                      height="50" alt=""
+                      height="50"
+                      alt={category.iconAlt}
                       loading="lazy"
                       decoding="async"
                     />
