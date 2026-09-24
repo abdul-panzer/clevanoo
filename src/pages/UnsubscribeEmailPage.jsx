@@ -1,11 +1,19 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import sendWebsiteEmail from "../services/websiteEmail";
 
 const ContactPage = () => {
     const [formStatus, setFormStatus] = useState("");
+    const [submitting, setSubmitting] = useState(false);
+    const isSubmittingRef = useRef(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (isSubmittingRef.current) return;
+
+        isSubmittingRef.current = true;
+        setSubmitting(true);
+        setFormStatus("");
+
         const form = e.target;
         const formData = new FormData(form);
 
@@ -22,6 +30,9 @@ const ContactPage = () => {
         } catch (error) {
             console.error("Laravel email error:", error);
             setFormStatus(error.response?.data?.error || "Failed to send message. Please try again later.");
+        } finally {
+            isSubmittingRef.current = false;
+            setSubmitting(false);
         }
     };
 
@@ -62,8 +73,8 @@ const ContactPage = () => {
                                     required
                                 />
                             </div>
-                            <button className="btn btn-primary w-100" type="submit">
-                                Unsubscribe
+                            <button className="btn btn-primary w-100" type="submit" disabled={submitting}>
+                                {submitting ? "Sending..." : "Unsubscribe"}
                             </button>
                         </form>
                     </div>

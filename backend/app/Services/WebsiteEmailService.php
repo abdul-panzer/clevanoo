@@ -4,11 +4,14 @@ namespace App\Services;
 
 use App\Mail\WebsiteNotificationMail;
 use App\Support\WebsiteEmailDebug;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
 use InvalidArgumentException;
 
 class WebsiteEmailService
 {
+    private const DUPLICATE_WINDOW_SECONDS = 600;
+
     private const TYPES = [
         'contact' => [
             'subject' => 'New website contact message',
@@ -65,6 +68,20 @@ class WebsiteEmailService
             throw new InvalidArgumentException("Unsupported website email type [{$type}].");
         }
 
+        $duplicateCacheKey = $this->duplicateCacheKey($type, $data);
+
+        if (! $this->reserveSendSlot($duplicateCacheKey)) {
+            if ($this->shouldDebug($type)) {
+                WebsiteEmailDebug::step('duplicate mail skipped', [
+                    'type' => $type,
+                    'fingerprint' => $this->fingerprint($type, $data),
+                    'window_seconds' => self::DUPLICATE_WINDOW_SECONDS,
+                ]);
+            }
+
+            return;
+        }
+
         $definition = self::TYPES[$type];
         $payload = [
             'title' => $definition['title'],
@@ -86,15 +103,21 @@ class WebsiteEmailService
             ]);
         }
 
-        Mail::to($recipient)->send(
-            new WebsiteNotificationMail(
-                type: $type,
-                subjectLine: $definition['subject'],
-                payload: $payload,
-                replyToAddress: $replyTo,
-                replyToName: $replyToName,
-            )
-        );
+        try {
+            Mail::to($recipient)->send(
+                new WebsiteNotificationMail(
+                    type: $type,
+                    subjectLine: $definition['subject'],
+                    payload: $payload,
+                    replyToAddress: $replyTo,
+                    replyToName: $replyToName,
+                )
+            );
+        } catch (\Throwable $exception) {
+            $this->cacheStore()->forget($duplicateCacheKey);
+
+            throw $exception;
+        }
 
         if ($this->shouldDebug($type)) {
             WebsiteEmailDebug::step('mail facade send returned', [
@@ -102,6 +125,39 @@ class WebsiteEmailService
                 'recipient' => $recipient,
             ]);
         }
+    }
+
+    private function reserveSendSlot(string $cacheKey): bool
+    {
+        return $this->cacheStore()->add(
+            $cacheKey,
+            now()->toIso8601String(),
+            self::DUPLICATE_WINDOW_SECONDS
+        );
+    }
+
+    private function duplicateCacheKey(string $type, array $data): string
+    {
+        return 'website-email:' . $this->fingerprint($type, $data);
+    }
+
+    private function cacheStore()
+    {
+        return Cache::store('file');
+    }
+
+    private function fingerprint(string $type, array $data): string
+    {
+        return hash('sha256', json_encode([
+            'type' => $type,
+            'email' => strtolower(trim((string) ($data['email'] ?? ''))),
+            'name' => strtolower(trim((string) ($data['name'] ?? ''))),
+            'phone' => preg_replace('/\D+/', '', (string) ($data['phone'] ?? '')),
+            'message' => preg_replace('/\s+/', ' ', trim((string) ($data['message'] ?? ''))),
+            'first_name' => strtolower(trim((string) ($data['first_name'] ?? ''))),
+            'last_name' => strtolower(trim((string) ($data['last_name'] ?? ''))),
+            'position_applied_for' => strtolower(trim((string) ($data['position_applied_for'] ?? ''))),
+        ]));
     }
 
     private function recipient(): string
@@ -136,3 +192,4 @@ class WebsiteEmailService
         return in_array($type, ['contact', 'unsubscribe', 'subscription'], true);
     }
 }
+

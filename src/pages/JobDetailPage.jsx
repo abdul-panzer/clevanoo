@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import API_BASE_URL from '../config/api';
@@ -12,6 +12,7 @@ const JobDetailPage = () => {
   const [job, setJob] = useState(null);
   const [loadingJob, setLoadingJob] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const isSubmittingRef = useRef(false);
 
   const [showModal, setShowModal] = useState(false);
 
@@ -91,8 +92,10 @@ const JobDetailPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (isSubmittingRef.current) return;
     if (!validate()) return;
 
+    isSubmittingRef.current = true;
     setSubmitting(true);
     setFormStatus('');
     const formDataToSend = new FormData();
@@ -146,6 +149,7 @@ const JobDetailPage = () => {
         setFormStatus('Network error. Please try again.');
       }
     } finally {
+      isSubmittingRef.current = false;
       setSubmitting(false);
     }
   };
@@ -401,3 +405,4 @@ const JobDetailPage = () => {
 };
 
 export default JobDetailPage;
+

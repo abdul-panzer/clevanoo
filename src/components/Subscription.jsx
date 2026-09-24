@@ -1,13 +1,17 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import sendWebsiteEmail from "../services/websiteEmail";
 
 const Subscription = () => {
   const [email, setEmail] = useState("");
   const [formStatus, setFormStatus] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const isSubmittingRef = useRef(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (isSubmittingRef.current) return;
+
+    isSubmittingRef.current = true;
     setSubmitting(true);
     setFormStatus("");
 
@@ -23,6 +27,7 @@ const Subscription = () => {
       console.error("Laravel email error:", error);
       setFormStatus(error.response?.data?.error || "Failed to subscribe. Please try again later.");
     } finally {
+      isSubmittingRef.current = false;
       setSubmitting(false);
     }
   };
@@ -58,7 +63,7 @@ const Subscription = () => {
                   onChange={(e) => setEmail(e.target.value)}
                   required
                 />
-                <button type="submit" className="btn btn-primary btn-lg px-4">
+                <button type="submit" className="btn btn-primary btn-lg px-4" disabled={submitting}>
                   {submitting ? "Sending..." : "Enter"}
                 </button>
               </form>
