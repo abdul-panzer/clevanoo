@@ -55,6 +55,17 @@ const JobUploadPage = () => {
     }, [currentPage, search]);
 
     const totalPages = Math.ceil(totalJobs / jobsPerPage);
+    const maxVisiblePages = 8;
+    const halfVisiblePages = Math.floor(maxVisiblePages / 2);
+    const startPage = Math.max(
+        1,
+        Math.min(currentPage - halfVisiblePages, totalPages - maxVisiblePages + 1)
+    );
+    const visiblePageCount = Math.min(totalPages, maxVisiblePages);
+    const visiblePages = Array.from(
+        { length: visiblePageCount },
+        (_, index) => startPage + index
+    );
 
     const handleSearchChange = (e) => {
         setSearch(e.target.value);
@@ -228,16 +239,16 @@ const JobUploadPage = () => {
                                             Previous
                                         </button>
                                     </li>
-                                    {[...Array(totalPages)].map((_, i) => (
+                                    {visiblePages.map((pageNumber) => (
                                         <li
-                                            key={i + 1}
-                                            className={`page-item ${currentPage === i + 1 ? "active" : ""}`}
+                                            key={pageNumber}
+                                            className={`page-item ${currentPage === pageNumber ? "active" : ""}`}
                                         >
                                             <button
                                                 className="page-link"
-                                                onClick={() => handlePageChange(i + 1)}
+                                                onClick={() => handlePageChange(pageNumber)}
                                             >
-                                                {i + 1}
+                                                {pageNumber}
                                             </button>
                                         </li>
                                     ))}

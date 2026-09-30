@@ -60,6 +60,17 @@ const JobsDataCards = () => {
     };
 
     const totalPages = Math.ceil(totalRows / perPage);
+    const maxVisiblePages = 8;
+    const halfVisiblePages = Math.floor(maxVisiblePages / 2);
+    const startPage = Math.max(
+        1,
+        Math.min(currentPage - halfVisiblePages, totalPages - maxVisiblePages + 1)
+    );
+    const visiblePageCount = Math.min(totalPages, maxVisiblePages);
+    const visiblePages = Array.from(
+        { length: visiblePageCount },
+        (_, index) => startPage + index
+    );
     const navigate = useNavigate();
 
     return (
@@ -197,9 +208,9 @@ const JobsDataCards = () => {
                         cursor: 'pointer',
                     }}
                 >
-                    {[...Array(totalPages)].map((_, idx) => (
-                        <option key={idx + 1} value={idx + 1}>
-                            Page {idx + 1}
+                    {visiblePages.map((pageNumber) => (
+                        <option key={pageNumber} value={pageNumber}>
+                            Page {pageNumber}
                         </option>
                     ))}
                 </select>
