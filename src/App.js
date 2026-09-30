@@ -7,6 +7,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Routes, Route } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import ScrollToTop from "./components/ScrollToTop";
+import CanonicalUrl from "./components/CanonicalUrl";
 
 const ServicesPage = lazy(() => import("./pages/ServicesPage"));
 const IndustriesPage = lazy(() => import("./pages/IndustriesPage"));
@@ -28,6 +29,7 @@ function App() {
 
   return (
     <div>
+      <CanonicalUrl />
       <Navbar />
       <ScrollToTop />
       <AnimatePresence>
