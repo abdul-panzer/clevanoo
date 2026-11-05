@@ -101,17 +101,20 @@ const Footer = () => {
             </div>
             <div className="col-md-6 text-md-end">
               <div className="social-icons">
-                <a href="https://www.facebook.com/profile.php?id=61578889364876" target="_blank" rel="noopener noreferrer" className="text-dark me-3 fs-5">
+                <a href="https://www.facebook.com/people/Clevanoo-HCI/61595029906760/" target="_blank" rel="noopener noreferrer" className="text-black me-3 fs-5">
                   <i className="fab fa-facebook"></i>
                 </a>
-                <a href="https://x.com/clevanoo44085" target="_blank" rel="noopener noreferrer" className="text-dark me-3 fs-5">
+                {/* <a href="https://x.com/clevanoo44085" target="_blank" rel="noopener noreferrer" className="text-black me-3 fs-5">
                   <i className="fab fa-x"></i>
-                </a>
-                <a href="https://www.linkedin.com/company/108140372/admin/dashboard/" target="_blank" rel="noopener noreferrer" className="text-dark me-3 fs-5">
+                </a> */}
+                <a href="https://www.linkedin.com/company/clevanoohci" target="_blank" rel="noopener noreferrer" className="text-black me-3 fs-5">
                   <i className="fab fa-linkedin"></i>
                 </a>
-                <a href="https://www.instagram.com/clevanoollc/" target="_blank" rel="noopener noreferrer" className="text-dark fs-5">
+                <a href="https://www.instagram.com/clevanoohealthcare/" target="_blank" rel="noopener noreferrer" className="text-black me-3 fs-5">
                   <i className="fab fa-instagram"></i>
+                </a>
+                <a href="https://share.google/zIsX2PnuVuuM1S9wU" target="_blank" rel="noopener noreferrer" className="text-black fs-5">
+                  <i className="fab fa-google"></i>
                 </a>
               </div>
             </div>
