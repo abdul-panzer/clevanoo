@@ -2,136 +2,96 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Candidate;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Log;
+use App\Models\Job;
 use App\Services\WebsiteEmailService;
-use Exception;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\URL;
+use RuntimeException;
 use Throwable;
 
 class CandidatesController extends Controller
 {
-    public function __construct(private WebsiteEmailService $websiteEmailService)
-    {
-    }
+    public function __construct(private WebsiteEmailService $websiteEmailService) {}
 
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
+        $data = $request->validate([
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'phone' => 'required|string|max:20',
+            'job_id' => 'nullable|integer|exists:clevanoo_jobs,id',
+            'position_applied_for' => 'required_without:job_id|nullable|string|max:255',
+            'visa_type' => 'nullable|string|max:255',
+            'state' => 'nullable|string|max:255',
+            'resume' => 'required|file|mimes:pdf,doc,docx|extensions:pdf,doc,docx|max:2048',
+            'message' => 'nullable|string|max:5000',
+        ]);
+
+        if (! empty($data['job_id'])) {
+            $data['position_applied_for'] = Job::findOrFail($data['job_id'])->jobtitle;
+        }
+        unset($data['job_id'], $data['resume']);
+
+        $path = null;
         try {
-            // Validate incoming data
-            $validated = $request->validate([
-                'first_name'           => 'required|string|max:255',
-                'last_name'            => 'required|string|max:255',
-                'email'                => 'required|email|max:255',
-                'phone'                => 'required|string|max:20',
-                'position_applied_for' => 'required|string|max:255',
-                'visa_type'            => 'nullable|string|max:255',
-                'state'                => 'nullable|string|max:255',
-                'resume'               => 'required|file|mimes:pdf,doc,docx|max:2048',
-                'message'              => 'nullable|string',
-            ]);
-
-            // Generate safe and unique file name
-            $date = now()->format('Ymd');
-            $extension = $request->file('resume')->getClientOriginalExtension();
-            $safeName = preg_replace('/[^A-Za-z0-9]/', '', $validated['first_name']) . '_' .
-                preg_replace('/[^A-Za-z0-9]/', '', $validated['last_name']);
-            $timestamp = now()->timestamp;
-            $filename = $safeName . '_' . $date . '_' . $timestamp . '.' . $extension;
-
-            // Try to store the resume file
-            try {
-                $resumePath = $request->file('resume')->storeAs('resumes', $filename, 'public');
-            } catch (Exception $e) {
-                Log::error('Resume upload failed: ' . $e->getMessage());
-                return response()->json([
-                    'error' => 'Failed to upload resume file.',
-                ], 500);
+            $path = $request->file('resume')->store('resumes', 'public');
+            if (! $path) {
+                throw new RuntimeException('Résumé storage failed.');
             }
-
-            // Save to database
-            try {
-                Candidate::create([
-                    'first_name'           => $validated['first_name'],
-                    'last_name'            => $validated['last_name'],
-                    'email'                => $validated['email'],
-                    'phone'                => $validated['phone'],
-                    'position_applied_for' => $validated['position_applied_for'],
-                    'visa_type'            => $validated['visa_type'] ?? null,
-                    'state'                => $validated['state'] ?? null,
-                    'resume_path'          => $resumePath,
-                    'message'              => $validated['message'] ?? null,
-                ]);
-            } catch (Exception $e) {
-                Log::error('Database insert failed: ' . $e->getMessage());
-
-                // Clean up the uploaded file if DB insert fails
-                if (Storage::disk('public')->exists($resumePath)) {
-                    Storage::disk('public')->delete($resumePath);
-                }
-
-                return response()->json([
-                    'error' => 'Failed to save candidate data to the database.',
-                ], 500);
+            $candidate = Candidate::create($data + ['resume_path' => $path]);
+        } catch (Throwable $exception) {
+            if ($path) {
+                Storage::disk('public')->delete($path);
             }
+            Log::error('Candidate application could not be saved.', ['exception_type' => $exception::class]);
 
-            $resumeUrl = $this->resumeDownloadUrl(basename($resumePath));
-
-            try {
-                $this->websiteEmailService->send('candidate_application', [
-                    ...$validated,
-                    'resume_url' => $resumeUrl,
-                ]);
-            } catch (Throwable $e) {
-                Log::error('Candidate notification email failed: ' . $e->getMessage());
-
-                return response()->json([
-                    'error' => config('app.debug')
-                        ? 'Candidate saved, but failed to send notification email: ' . $e->getMessage()
-                        : 'Candidate saved, but failed to send notification email.',
-                    'resume_path' => $resumePath,
-                ], 500);
-            }
-
-            return response()->json([
-                'message' => 'Candidate submitted successfully!',
-                'resume_path' => $resumePath,
-            ], 201);
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            return response()->json([
-                'error'   => 'Validation failed.',
-                'details' => $e->errors(),
-            ], 422);
-        } catch (Exception $e) {
-            Log::error('Unexpected error: ' . $e->getMessage());
-
-            return response()->json([
-                'error' => 'An unexpected error occurred.',
-            ], 500);
+            return response()->json(['error' => 'Your application could not be saved. Please try again.'], 500);
         }
+
+        $notificationSent = true;
+        try {
+            $this->websiteEmailService->send('candidate_application', $data + [
+                'candidate_id' => $candidate->id,
+                'resume_url' => $this->resumeDownloadUrl(basename($path)),
+            ]);
+        } catch (Throwable $exception) {
+            $notificationSent = false;
+            Log::error('Candidate notification failed.', ['candidate_id' => $candidate->id, 'exception_type' => $exception::class]);
+        }
+
+        return response()->json([
+            'message' => 'Your application has been saved.',
+            'notification_sent' => $notificationSent,
+        ], 201);
     }
 
-    public function downloadResume(string $filename)
+    public function downloadResume(Request $request, string $filename)
     {
-        $filename = basename($filename);
-        $path = 'resumes/' . $filename;
+        abort_unless($filename === basename($filename), 404);
+        $path = 'resumes/'.$filename;
+        $public = Storage::disk('public');
+        if ($public->exists($path)) {
+            return $public->download($path, headers: ['Cache-Control' => 'private, no-store']);
+        }
+        $private = Storage::disk('local');
+        if ($private->exists($path)) {
+            abort_unless($request->hasValidSignature(), 403);
 
-        if (! Storage::disk('public')->exists($path)) {
-            abort(404);
+            return $private->download($path, headers: ['Cache-Control' => 'private, no-store']);
         }
 
-        return Storage::disk('public')->download($path, $filename);
+        abort(404);
     }
 
     private function resumeDownloadUrl(string $filename): string
     {
-        $baseUrl = config('services.website_mail.resume_base_url');
+        $base = config('services.website_mail.resume_base_url');
 
-        if ($baseUrl) {
-            return rtrim($baseUrl, '/') . '/' . rawurlencode($filename);
-        }
-
-        return url('api/resumes/' . rawurlencode($filename));
+        return $base ? rtrim($base, '/').'/'.rawurlencode($filename) : URL::route('candidate.resume', ['filename' => $filename]);
     }
 }

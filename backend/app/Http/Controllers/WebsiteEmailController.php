@@ -10,6 +10,6 @@ class WebsiteEmailController extends Controller
 {
     public function send(Request $request): JsonResponse
     {
-        return WebsiteEmailEndpoint::send($request, 'WebsiteEmailController::send');
+        return WebsiteEmailEndpoint::send($request);
     }
 }

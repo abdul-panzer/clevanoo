@@ -1,0 +1,64 @@
+<main id="main">
+  <section class="page-hero tall">
+    <div class="wrap job-detail">
+      <a class="link-more" href="/jobs">Back to jobs</a>
+      <p id="job-status" role="status">Loading job details…</p>
+      <div id="job-detail" hidden>
+        <h1 id="job-title"></h1>
+        <dl class="job-facts" id="job-facts"></dl>
+        <a class="btn btn-primary" href="#apply">Apply for this role</a>
+        <div class="card pad job-description">
+          <h2 class="h-card lg">Job description</h2>
+          <p id="job-description"></p>
+        </div>
+        <form class="card contact-form" id="apply" method="post" enctype="multipart/form-data">
+          <h2 class="h-card lg">Apply for this role</h2>
+          <div class="field">
+            <label for="apply-first">First name</label>
+            <input class="input" id="apply-first" name="first_name" autocomplete="given-name" maxlength="255" required>
+          </div>
+          <div class="field">
+            <label for="apply-last">Last name</label>
+            <input class="input" id="apply-last" name="last_name" autocomplete="family-name" maxlength="255" required>
+          </div>
+          <div class="field">
+            <label for="apply-email">Email</label>
+            <input class="input" id="apply-email" name="email" type="email" autocomplete="email" maxlength="255" required>
+          </div>
+          <div class="field">
+            <label for="apply-phone">Phone number</label>
+            <input class="input" id="apply-phone" name="phone" type="tel" autocomplete="tel" minlength="7" maxlength="20" required>
+          </div>
+          <div class="field">
+            <label for="apply-visa">Visa type (optional)</label>
+            <select class="input" id="apply-visa" name="visa_type">
+              <option value="">Select visa type</option>
+              <option value="H1">H1</option>
+              <option value="GC">GC</option>
+              <option value="EAD_GC">EAD GC</option>
+              <option value="TN_Visa">TN Visa</option>
+              <option value="EAD_OPT">EAD OPT</option>
+              <option value="US_Citizen">US Citizen</option>
+              <option value="Canada_Citizen">Canada Citizen</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="apply-state">State (optional)</label>
+            <input class="input" id="apply-state" name="state" autocomplete="address-level1" maxlength="255">
+          </div>
+          <div class="field">
+            <label for="apply-resume">Résumé</label>
+            <input class="input" id="apply-resume" name="resume" type="file" accept=".pdf,.doc,.docx" aria-describedby="resume-help" required>
+            <p class="muted small" id="resume-help">PDF, DOC, or DOCX, up to 2 MB.</p>
+          </div>
+          <div class="field">
+            <label for="apply-message">Message (optional)</label>
+            <textarea class="input" id="apply-message" name="message" rows="4" maxlength="5000"></textarea>
+          </div>
+          <button class="btn btn-primary btn-block" type="submit">Submit application</button>
+          <p class="form-status" role="status" hidden></p>
+        </form>
+      </div>
+    </div>
+  </section>
+</main>

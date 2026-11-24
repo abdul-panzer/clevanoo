@@ -1,0 +1,21 @@
+<main id="main">
+  <section class="page-hero tall" data-scene="network" data-dim="0.22">
+    <div class="wrap">
+      <h1 class="center reveal">Current Job Openings</h1>
+      <div class="jobs-tools reveal">
+        <label for="job-search" class="h-card lg">Search jobs</label>
+        <input id="job-search" class="input" type="search" placeholder="Job title, skill, or location" autocomplete="off" aria-controls="job-list">
+      </div>
+      <p class="job-empty" id="job-status" role="status">Loading jobs…</p>
+      <div class="grid-3 job-grid" id="job-list" aria-busy="true"></div>
+      <button type="button" class="btn btn-outline job-retry" id="job-retry" hidden>Try again</button>
+      <nav class="pager" id="job-pager" aria-label="Job listing pages" hidden>
+        <button type="button" class="btn btn-ghost" id="job-prev">Previous</button>
+        <label class="visually-hidden" for="job-page">Page</label>
+        <select id="job-page" class="input select"></select>
+        <button type="button" class="btn btn-ghost" id="job-next">Next</button>
+      </nav>
+      {{> job-card}}
+    </div>
+  </section>
+</main>

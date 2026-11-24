@@ -12,8 +12,12 @@ class JobController extends Controller
     {
         $query = Job::query();
 
-        if ($request->has('search')) {
-            $search = $request->search;
+        $filters = $request->validate([
+            'search' => 'nullable|string|max:255',
+            'per_page' => 'nullable|integer|min:1|max:100',
+            'page' => 'nullable|integer|min:1',
+        ]);
+        if (($search = $filters['search'] ?? '') !== '') {
             $query->where(function ($q) use ($search) {
                 $q->where('jobtitle', 'like', "%{$search}%")
                     ->orWhere('city', 'like', "%{$search}%")
@@ -23,8 +27,8 @@ class JobController extends Controller
                     ->orWhere('description', 'like', "%{$search}%");
             });
         }
-        $query->orderBy('created_at', 'desc');
-        $perPage = $request->get('per_page', 10);
+        $query->orderByDesc('created_at')->orderByDesc('id');
+        $perPage = $filters['per_page'] ?? 10;
         $jobs = $query->paginate($perPage);
 
         return response()->json($jobs, 200);
@@ -39,12 +43,11 @@ class JobController extends Controller
             'state'       => 'required|string|max:255',
             'duration'    => 'required|string|max:100',
             'bill_rate'   => 'required|string|max:100',
-            'description' => 'nullable|string',
+            'description' => 'required|string|max:15000',
         ]);
 
         $job = Job::create($validated);
 
-        // return response()->json($job, 201);
         return response()->json([
             'status'  => 'success',
             'message' => 'Job successfully created.',
@@ -68,7 +71,7 @@ class JobController extends Controller
             'state'       => 'sometimes|required|string|max:255',
             'duration'    => 'sometimes|required|string|max:100',
             'bill_rate'   => 'sometimes|required|string|max:100',
-            'description' => 'nullable|string',
+            'description' => 'sometimes|required|string|max:15000',
         ]);
 
         $job->update($validated);

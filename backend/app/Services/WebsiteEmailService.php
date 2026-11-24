@@ -3,10 +3,10 @@
 namespace App\Services;
 
 use App\Mail\WebsiteNotificationMail;
-use App\Support\WebsiteEmailDebug;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
 use InvalidArgumentException;
+use RuntimeException;
 
 class WebsiteEmailService
 {
@@ -57,99 +57,42 @@ class WebsiteEmailService
 
     public function send(string $type, array $data): void
     {
-        if ($this->shouldDebug($type)) {
-            WebsiteEmailDebug::step('service entered', [
-                'type' => $type,
-                'data_keys' => array_keys($data),
-            ]);
-        }
+        $definition = self::TYPES[$type] ?? throw new InvalidArgumentException('Unsupported website email type.');
+        $key = 'website-email:'.$this->fingerprint($type, $data);
 
-        if (! array_key_exists($type, self::TYPES)) {
-            throw new InvalidArgumentException("Unsupported website email type [{$type}].");
-        }
-
-        $duplicateCacheKey = $this->duplicateCacheKey($type, $data);
-
-        if (! $this->reserveSendSlot($duplicateCacheKey)) {
-            if ($this->shouldDebug($type)) {
-                WebsiteEmailDebug::step('duplicate mail skipped', [
-                    'type' => $type,
-                    'fingerprint' => $this->fingerprint($type, $data),
-                    'window_seconds' => self::DUPLICATE_WINDOW_SECONDS,
-                ]);
+        Cache::lock($key.':lock', 90)->block(10, function () use ($key, $type, $data, $definition): void {
+            if (Cache::has($key)) {
+                return;
             }
 
-            return;
-        }
-
-        $definition = self::TYPES[$type];
-        $payload = [
-            'title' => $definition['title'],
-            'fields' => $this->formatFields($definition['fields'], $data),
-        ];
-
-        $replyTo = filter_var($data['email'] ?? null, FILTER_VALIDATE_EMAIL) ?: null;
-        $replyToName = $data['name'] ?? trim(($data['first_name'] ?? '') . ' ' . ($data['last_name'] ?? ''));
-        $replyToName = $replyToName !== '' ? $replyToName : null;
-        $recipient = $this->recipient();
-
-        if ($this->shouldDebug($type)) {
-            WebsiteEmailDebug::step('mail object prepared', [
-                'type' => $type,
-                'subject' => $definition['subject'],
-                'recipient' => $recipient,
-                'reply_to' => $replyTo,
-                'field_count' => count($payload['fields']),
-            ]);
-        }
-
-        try {
-            Mail::to($recipient)->send(
-                new WebsiteNotificationMail(
-                    type: $type,
-                    subjectLine: $definition['subject'],
-                    payload: $payload,
-                    replyToAddress: $replyTo,
-                    replyToName: $replyToName,
-                )
-            );
-        } catch (\Throwable $exception) {
-            $this->cacheStore()->forget($duplicateCacheKey);
-
-            throw $exception;
-        }
-
-        if ($this->shouldDebug($type)) {
-            WebsiteEmailDebug::step('mail facade send returned', [
-                'type' => $type,
-                'recipient' => $recipient,
-            ]);
-        }
-    }
-
-    private function reserveSendSlot(string $cacheKey): bool
-    {
-        return $this->cacheStore()->add(
-            $cacheKey,
-            now()->toIso8601String(),
-            self::DUPLICATE_WINDOW_SECONDS
-        );
-    }
-
-    private function duplicateCacheKey(string $type, array $data): string
-    {
-        return 'website-email:' . $this->fingerprint($type, $data);
-    }
-
-    private function cacheStore()
-    {
-        return Cache::store('file');
+            $recipient = $this->recipient();
+            if (! filter_var($recipient, FILTER_VALIDATE_EMAIL)) {
+                throw new RuntimeException('The website mail recipient is not configured.');
+            }
+            $replyTo = filter_var($data['email'] ?? null, FILTER_VALIDATE_EMAIL) ?: null;
+            $replyToName = $data['name'] ?? trim(($data['first_name'] ?? '').' '.($data['last_name'] ?? ''));
+            $sent = Mail::to($recipient)->send(new WebsiteNotificationMail(
+                type: $type,
+                subjectLine: $definition['subject'],
+                payload: [
+                    'title' => $definition['title'],
+                    'fields' => $this->formatFields($definition['fields'], $data),
+                ],
+                replyToAddress: $replyTo,
+                replyToName: $replyToName ?: null,
+            ));
+            if (! $sent) {
+                throw new RuntimeException('The mail transport did not send the message.');
+            }
+            Cache::put($key, true, self::DUPLICATE_WINDOW_SECONDS);
+        });
     }
 
     private function fingerprint(string $type, array $data): string
     {
         return hash('sha256', json_encode([
             'type' => $type,
+            'candidate_id' => $data['candidate_id'] ?? null,
             'email' => strtolower(trim((string) ($data['email'] ?? ''))),
             'name' => strtolower(trim((string) ($data['name'] ?? ''))),
             'phone' => preg_replace('/\D+/', '', (string) ($data['phone'] ?? '')),
@@ -160,7 +103,7 @@ class WebsiteEmailService
         ]));
     }
 
-    private function recipient(): string
+    private function recipient(): ?string
     {
         return config('services.website_mail.to')
             ?: config('mail.from.address');
@@ -187,9 +130,5 @@ class WebsiteEmailService
         return $formatted;
     }
 
-    private function shouldDebug(string $type): bool
-    {
-        return in_array($type, ['contact', 'unsubscribe', 'subscription'], true);
-    }
 }
 

@@ -7,7 +7,6 @@
 </head>
 <body style="margin:0;padding:0;background:#eef4f8;color:#1c2630;font-family:Arial,Helvetica,sans-serif;">
     @php
-        $logoUrl = config('services.website_mail.logo_url', 'https://clevanoo.com/logo.webp');
         $brandUrl = config('services.website_mail.brand_url', 'https://clevanoo.com');
     @endphp
 
@@ -21,7 +20,7 @@
                                 <tr>
                                     <td align="center" style="padding:30px 34px 16px;border-bottom:1px solid #edf2f5;">
                                         <a href="{{ $brandUrl }}" style="text-decoration:none;">
-                                            <img src="{{ $logoUrl }}" alt="Clevanoo" width="148" style="display:block;width:148px;max-width:148px;height:auto;border:0;">
+                                            <img src="{{ $message->embed(resource_path('images/clevanoo-logo.png')) }}" alt="Clevanoo" width="208" height="34" style="display:block;width:208px;height:34px;border:0;">
                                         </a>
                                     </td>
                                 </tr>

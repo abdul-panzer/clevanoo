@@ -1,0 +1,21 @@
+DirectoryIndex index.html
+ErrorDocument 404 /404.html
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+
+    # Redirect HTTP to HTTPS.
+    RewriteCond %{HTTPS} off
+    RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+    # Let Laravel's own rules handle backend requests.
+    RewriteRule ^backend(?:/|$) - [L]
+
+    # Serve the generated page for each clean URL.
+    RewriteRule ^jobUpload/?$ job-upload.html [END,NC]
+    RewriteRule ^(about|services|zendesk|industries|jobs|contact|faq|unsubscribe-email)/?$ $1.html [END]
+    RewriteRule ^case-studies/?$ zendesk-case-studies.html [END]
+    RewriteRule ^speciality/?$ specialities.html [END]
+    RewriteRule ^job/[1-9][0-9]*/?$ job.html [END]
+</IfModule>

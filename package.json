@@ -30,10 +30,11 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "start": "node frontend/scripts/site.mjs --serve",
+    "build": "node frontend/scripts/site.mjs",
+    "start:legacy": "react-scripts start",
+    "build:legacy": "node frontend/scripts/build-legacy.cjs",
+    "test": "react-scripts test"
   },
   "eslintConfig": {
     "extends": [

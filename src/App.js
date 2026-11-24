@@ -8,6 +8,7 @@ import { Routes, Route } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import ScrollToTop from "./components/ScrollToTop";
 import CanonicalUrl from "./components/CanonicalUrl";
+import API_BASE_URL from "./config/api";
 
 const ServicesPage = lazy(() => import("./pages/ServicesPage"));
 const IndustriesPage = lazy(() => import("./pages/IndustriesPage"));
@@ -61,7 +62,7 @@ function App() {
               <Route path="/jobs" element={<JobsPage />} />
               <Route path="/job/:id" element={<JobDetailPage />} />
               <Route path="/speciality" element={<SpecialityPage />} />
-              <Route path="/jobUpload" element={<JobUploadPage />} />
+              <Route path="/jobUpload" element={<JobUploadPage apiBaseUrl={API_BASE_URL} />} />
             </Routes>
           </Suspense>
         </motion.main>
