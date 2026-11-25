@@ -29,9 +29,13 @@
     "typewriter-effect": "^2.22.0",
     "web-vitals": "^2.1.4"
   },
+  "devDependencies": {
+    "jsdom": "16.7.0"
+  },
   "scripts": {
     "start": "node frontend/scripts/site.mjs --serve",
     "build": "node frontend/scripts/site.mjs",
+    "test:site": "node --test frontend/scripts/test-site.mjs",
     "start:legacy": "react-scripts start",
     "build:legacy": "node frontend/scripts/build-legacy.cjs",
     "test": "react-scripts test"

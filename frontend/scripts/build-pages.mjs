@@ -2,8 +2,11 @@
 // Pages may contain {{> name}} for a generated fragment (case studies, jobs).
 import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { PAGES } from '../src/data/site.js';
+import { CORPORATION_SCHEMA, PAGES, SHARE_IMAGE, SITE_ORIGIN } from '../src/data/site.js';
 import { CASE_STUDIES, CATEGORIES } from '../src/data/case-studies.js';
+import { STAGES } from '../src/config.js';
+import { HOME_INTRO_HTML } from '../src/homeIntro.js';
+import { SECTIONS_HTML } from '../src/sectionsHtml.js';
 
 const read = (file) => readFileSync(new URL('../' + file, import.meta.url), 'utf8');
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -23,6 +26,17 @@ const ICONS = {
 const icon = (cat) => `<svg viewBox="0 0 24 24" aria-hidden="true">${ICONS[cat] || ICONS.Apps}</svg>`;
 
 const FRAGMENTS = {
+  'home-intro': () => HOME_INTRO_HTML,
+  'home-stages': () => STAGES.map(({ no, title, text }) => `
+            <li class="step is-active">
+              <div class="step-head">
+                <span class="step-dot" aria-hidden="true"></span>
+                <span class="step-no">${esc(no)}</span>
+                <span class="step-title">${esc(title)}</span>
+              </div>
+              <div class="step-body"><p>${esc(text)}</p></div>
+            </li>`).join('\n'),
+  'home-sections': () => SECTIONS_HTML,
   'job-card': () => read('src/partials/job-card.html'),
   'case-filters': () => ['All', ...CATEGORIES].map((c, i) =>
     `<button type="button" class="chip-btn" data-filter="${i ? slug(c) : 'all'}" aria-pressed="${i ? 'false' : 'true'}">${esc(c)}</button>`).join('\n'),
@@ -47,21 +61,37 @@ function layout(key, meta, body, apiBase, analytics, bundles) {
   let head = header.replace(`data-nav="${key}"`, `data-nav="${key}" class="is-active" aria-current="page"`);
   if (meta.group) head = head.replace(`data-nav-group="${meta.group}"`, `data-nav-group="${meta.group}" data-active="true"`);
   const isHome = key === 'home';
+  const isJob = key === 'job';
   const isJobUpload = key === 'job-upload';
+  const canonical = meta.path && esc(SITE_ORIGIN + meta.path);
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>${esc(meta.title)}</title>
-${meta.description ? `<meta name="description" content="${esc(meta.description)}">` : ''}
-${meta.path ? `<link rel="canonical" href="https://clevanoo.com${meta.path}">
-<meta property="og:url" content="https://clevanoo.com${meta.path}">` : ''}
+<meta name="author" content="Clevanoo LLC">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Clevanoo">
+<meta property="og:image" content="${SHARE_IMAGE}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Clevanoo – Technology and Professional Staffing">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="${SHARE_IMAGE}">
+<meta name="twitter:image:alt" content="Clevanoo – Technology and Professional Staffing">
+${isJob ? '<!-- job-head -->' : ''}<title>${esc(meta.title)}</title>
+${meta.description ? `<meta name="description" content="${esc(meta.description)}">
+<meta property="og:description" content="${esc(meta.description)}">
+<meta name="twitter:description" content="${esc(meta.description)}">` : ''}
+${canonical ? `<link rel="canonical" href="${canonical}">
+<meta property="og:url" content="${canonical}">` : ''}
 ${meta.noindex ? '<meta name="robots" content="noindex">' : ''}
 <meta property="og:title" content="${esc(meta.title)}">
-<meta property="og:type" content="website">
-<meta property="og:image" content="https://clevanoo.com/logo.webp">
-<meta name="clevanoo-api" content="${esc(apiBase)}">
+<meta name="twitter:title" content="${esc(meta.title)}">
+${isHome ? `<script type="application/ld+json">
+${JSON.stringify(CORPORATION_SCHEMA, null, 2).replaceAll('<', '\\u003c')}
+</script>` : ''}
+${isJob ? '<!-- /job-head -->' : ''}<meta name="clevanoo-api" content="${esc(apiBase)}">
 ${analytics ? tagManager : ''}
 <link rel="icon" href="/favicon.ico">
 <meta name="theme-color" content="#1A2955">

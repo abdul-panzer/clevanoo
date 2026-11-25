@@ -1,15 +1,14 @@
-// The remaining sections of the site, unchanged content. Kept as markup so the copy stays exactly as supplied.
-export const SECTIONS_HTML = `<!-- STATISTICS -->
-<section class="stats-section" aria-label="Key figures">
+export const SECTIONS_HTML = `<!-- STAFFING LINKS -->
+<nav class="stats-section" aria-label="Explore staffing">
   <div class="wrap">
-    <dl class="stats">
-      <div class="stat reveal"><dt>Current Openings</dt><dd><a href="/jobs">Browse jobs</a></dd></div>
-      <div class="stat reveal"><dt>Retention Rate</dt><dd>100%</dd></div>
-      <div class="stat reveal"><dt>Average Time-To-Hire</dt><dd>14 Days</dd></div>
-      <div class="stat reveal"><dt>Enterprise Partners</dt><dd>250+</dd></div>
-    </dl>
+    <ul class="stats">
+      <li class="stat reveal"><a href="/jobs">Current Job Openings</a></li>
+      <li class="stat reveal"><a href="/industries#manufacturing">Manufacturing Staffing</a></li>
+      <li class="stat reveal"><a href="/industries#engineering">Engineering Staffing</a></li>
+      <li class="stat reveal"><a href="/industries#finance">Accounting &amp; Finance Staffing</a></li>
+    </ul>
   </div>
-</section>
+</nav>
 
 <!-- ABOUT + STORY -->
 <section class="section about" id="about">
@@ -74,7 +73,7 @@ export const SECTIONS_HTML = `<!-- STATISTICS -->
 <section class="mission" id="mission">
   <div class="wrap narrow center reveal">
     <h2>Our Mission</h2>
-    <p class="mission-text">To empower businesses with exceptional staffing solutions that combine speed, precision, and cultural alignment-helping companies innovate, scale, and succeed in today’s competitive digital landscape.</p>
+    <p class="mission-text">To empower businesses with exceptional staffing solutions that combine speed, precision, and cultural alignment to help companies innovate, scale, and succeed.</p>
   </div>
 </section>
 
@@ -111,37 +110,37 @@ export const SECTIONS_HTML = `<!-- STATISTICS -->
 <section class="section gray" id="industries">
   <div class="wrap">
     <div class="center reveal">
-      <h2>Browse Jobs Categories</h2>
-      <p class="sub">Find your dream jobs. Carefully crafted after analyzing the needs of different industries.</p>
+      <h2>Browse Jobs by Category</h2>
+      <p class="sub">Explore current openings by industry.</p>
     </div>
     <div class="grid-4">
       <article class="card cat reveal">
         <span class="cat-bars" aria-hidden="true"><i></i><i></i></span>
         <span class="cat-ico"><svg viewBox="0 0 32 32" aria-hidden="true"><rect x="5" y="4" width="15" height="22" rx="2"/><path d="M9 9h7M9 14h2M14 14h2M9 18h2M14 18h2"/><circle cx="23" cy="22" r="5.5"/><path d="M23 19v6M21.2 23.6c.5.8 3.6.9 3.6-.6s-3.6-.8-3.6-2.2 2.8-1.4 3.5-.5"/></svg></span>
         <h3>Accounting / Finance</h3>
-        <p>Find your dream job in accounting and finance sector with top companies.</p>
-        <a class="btn btn-primary btn-block" href="/jobs">More Jobs <svg class="ico-arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 12 12 4M5.5 4H12v6.5"/></svg></a>
+        <p>Find roles in accounting, banking, and finance.</p>
+        <a class="btn btn-primary btn-block" href="/jobs?category=accounting-finance">Accounting and finance jobs <svg class="ico-arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 12 12 4M5.5 4H12v6.5"/></svg></a>
       </article>
       <article class="card cat cat-feature panel-brand reveal">
         <span class="cat-bars" aria-hidden="true"><i></i><i></i></span>
         <span class="cat-ico"><svg viewBox="0 0 32 32" aria-hidden="true"><rect x="10" y="10" width="12" height="12" rx="2"/><path d="M14 4v6M18 4v6M14 22v6M18 22v6M4 14h6M4 18h6M22 14h6M22 18h6M14 19l2-6 2 6M14.7 17h2.6"/></svg></span>
         <h3>Technology</h3>
         <p>Explore exciting opportunities in the ever-evolving tech industry.</p>
-        <a class="btn btn-light btn-block" href="/jobs">More Jobs <svg class="ico-arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 12 12 4M5.5 4H12v6.5"/></svg></a>
+        <a class="btn btn-light btn-block" href="/jobs?category=technology">Technology jobs <svg class="ico-arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 12 12 4M5.5 4H12v6.5"/></svg></a>
       </article>
       <article class="card cat reveal">
         <span class="cat-bars" aria-hidden="true"><i></i><i></i></span>
         <span class="cat-ico"><svg viewBox="0 0 32 32" aria-hidden="true"><rect x="4" y="6" width="24" height="16" rx="2"/><path d="M11 27h10M16 22v5"/><circle cx="16" cy="12" r="2.5"/><path d="M11.5 19c.6-2.4 2.3-3.5 4.5-3.5s3.9 1.1 4.5 3.5"/></svg></span>
-        <h3>Tele-communications</h3>
+        <h3>Telecommunications</h3>
         <p>Connect with leading telecom companies and advance your career.</p>
-        <a class="btn btn-primary btn-block" href="/jobs">More Jobs <svg class="ico-arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 12 12 4M5.5 4H12v6.5"/></svg></a>
+        <a class="btn btn-primary btn-block" href="/jobs?category=telecommunications">Telecommunications jobs <svg class="ico-arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 12 12 4M5.5 4H12v6.5"/></svg></a>
       </article>
       <article class="card cat reveal">
         <span class="cat-bars" aria-hidden="true"><i></i><i></i></span>
         <span class="cat-ico"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 26S5 19.5 5 12a6 6 0 0 1 11-3.3A6 6 0 0 1 27 12c0 7.5-11 14-11 14z"/><path d="M8 15h4l2-3.5 3 6.5 2-3h5"/></svg></span>
         <h3>Healthcare</h3>
-        <p>Make a difference in healthcare with rewarding career opportunities.</p>
-        <a class="btn btn-primary btn-block" href="/jobs">More Jobs <svg class="ico-arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 12 12 4M5.5 4H12v6.5"/></svg></a>
+        <p>Explore healthcare and allied health roles, including physical therapists and physical therapist assistants.</p>
+        <a class="btn btn-primary btn-block" href="/jobs?category=healthcare">Healthcare jobs <svg class="ico-arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 12 12 4M5.5 4H12v6.5"/></svg></a>
       </article>
     </div>
   </div>
@@ -182,7 +181,7 @@ export const SECTIONS_HTML = `<!-- STATISTICS -->
           </svg>
         </div>
         <p class="spec-eyebrow"><span class="dash"></span>Cybersecurity Staffing</p>
-        <p class="spec-kicker">Artificial Intelligence Talent Solutions</p>
+        <p class="spec-kicker">Cybersecurity Talent Solutions</p>
         <h3>Protect Your Business with Security Experts</h3>
         <p class="spec-lede">Build your security fortress with certified cybersecurity professionals who defend against evolving threats and ensure compliance.</p>
         <h4>Security Specializations</h4>
@@ -199,7 +198,7 @@ export const SECTIONS_HTML = `<!-- STATISTICS -->
 <section class="section soft" id="jobs">
   <div class="wrap">
     <h2 class="center reveal">Our Latest Jobs</h2>
-    <div class="grid-3 job-grid" id="latest-jobs" aria-live="polite">Loading jobs…</div>
+    <div class="grid-3 job-grid" id="latest-jobs" aria-live="polite"></div>
     <div class="mosaic">
       <figure class="tile reveal"><img src="/assets/images/2.webp" alt="" loading="lazy"></figure>
       <figure class="tile reveal"><img src="/assets/images/1.webp" alt="" loading="lazy"></figure>
@@ -246,7 +245,7 @@ export const SECTIONS_HTML = `<!-- STATISTICS -->
       <p class="side-eyebrow"><span class="dash"></span>Testimonials</p>
       <div class="center">
         <h2>Happy Candidates Say About Us</h2>
-        <p class="sub">Find your dream jobs. Carefully crafted after analyzing the needs of different industries.</p>
+        <p class="sub">Hear from professionals who have worked with Clevanoo.</p>
       </div>
     </div>
     <div class="grid-3">

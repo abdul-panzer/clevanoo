@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Candidate;
 use App\Models\Job;
+use App\Support\JobListing;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Mail;
@@ -51,6 +52,53 @@ class WebsiteFlowsTest extends TestCase
         $this->getJson('/api/jobs/'.$job->id)->assertNotFound();
     }
 
+    public function test_public_job_categories_work_with_search_and_keep_internal_rates_private(): void
+    {
+        $titles = [
+            'accounting-finance' => 'Senior Accountant',
+            'technology' => 'Snowflake Architect',
+            'telecommunications' => 'Fiber Splicer',
+            'healthcare' => 'Physical Therapist Assistant',
+        ];
+        $ids = [];
+        foreach ($titles as $category => $title) {
+            $ids[$category] = Job::create([
+                'jobtitle' => $title, 'city' => 'Remote', 'state' => 'Remote', 'duration' => 'Contract',
+                'bill_rate' => 'Internal confidential rate',
+                'description' => "Responsibilities: Review requests.\nRequirements: Prior experience.",
+            ])->id;
+        }
+        foreach ($titles as $category => $title) {
+            $this->getJson('/api/all-jobs?per_page=1&'.http_build_query(['category' => $category, 'search' => 'experience']))
+                ->assertOk()->assertJsonPath('total', 1)->assertJsonPath('data.0.jobtitle', $title)
+                ->assertJsonPath('data.0.facts.Location', 'Remote')->assertJsonMissingPath('data.0.bill_rate');
+        }
+        $this->getJson('/api/all-jobs?category=technology&search=Fiber')->assertJsonPath('total', 0);
+        $this->getJson('/api/all-jobs?search=Internal%20confidential%20rate')->assertJsonPath('total', 0);
+        $this->getJson('/api/all-jobs?category=made-up')->assertUnprocessable();
+        $this->getJson('/api/jobs/'.$ids['technology'])->assertOk()
+            ->assertJsonPath('sections.Responsibilities', 'Review requests.')
+            ->assertJsonPath('sections.Requirements', 'Prior experience.')
+            ->assertJsonMissingPath('bill_rate');
+        $this->putJson('/api/update-job/'.$ids['technology'], ['description' => 'Updated technology role.'])->assertOk();
+        $this->getJson('/api/jobs/'.$ids['healthcare'])->assertJsonPath('sections.Requirements', 'Prior experience.');
+    }
+
+    public function test_snowflake_description_is_structured_without_assigning_unverified_terms(): void
+    {
+        $job = new Job([
+            'jobtitle' => 'Snowflake Architect', 'city' => 'Remote', 'state' => 'Remote',
+            'duration' => '6 Months', 'bill_rate' => 'DOE',
+            'description' => "W2 Only\n\nDeveloping in Snowflake/AWS\nLand all data in AWS\nSnowflake native tools (snow pipe)\nIDMC",
+        ]);
+        $this->assertSame(['Location' => 'Remote', 'Duration' => '6 Months'], JobListing::facts($job));
+        $this->assertSame([
+            'Work arrangement' => 'W2 Only',
+            'Responsibilities' => "Developing in Snowflake/AWS\nLand all data in AWS",
+            'Tools and technologies' => "Snowflake native tools (snow pipe)\nIDMC",
+        ], JobListing::sections($job));
+    }
+
     public function test_contact_and_unsubscribe_use_the_mail_transport(): void
     {
         $contact = [
@@ -94,6 +142,11 @@ class WebsiteFlowsTest extends TestCase
 
         $candidate = Candidate::sole();
         $this->assertSame('Test QA job', $candidate->position_applied_for);
+        if (! getenv('CLEVANOO_TEST_SMTP_PORT')) {
+            $mail = Mail::getSymfonyTransport()->messages()->sole()->getOriginalMessage();
+            $this->assertSame('inbox@example.test', $mail->getTo()[0]->getAddress());
+            $this->assertStringContainsString('Test QA job', $mail->getHtmlBody());
+        }
         Storage::disk('public')->assertExists($candidate->resume_path);
         Storage::disk('local')->assertMissing($candidate->resume_path);
         $filename = basename($candidate->resume_path);

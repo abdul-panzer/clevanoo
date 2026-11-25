@@ -1,2 +1,20 @@
-<div id="root"></div>
+<div id="home-backdrop"></div>
+<main id="main">
+  <div id="home-hero">
+    <section class="journey is-static no-webgl" id="home" aria-label="How Clevanoo works">
+      <div class="journey-sticky">
+        <div class="journey-intro">{{> home-intro}}</div>
+        <div class="steps">
+          <ol>{{> home-stages}}</ol>
+        </div>
+      </div>
+    </section>
+  </div>
+  <section class="teaser" aria-label="Next">
+    <div class="wrap">
+      <h2 class="teaser-title">The right talent. The right fit. Ready to move forward.</h2>
+    </div>
+  </section>
+  <div class="rest">{{> home-sections}}</div>
+</main>
 {{> job-card}}

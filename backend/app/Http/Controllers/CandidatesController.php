@@ -30,6 +30,8 @@ class CandidatesController extends Controller
             'state' => 'nullable|string|max:255',
             'resume' => 'required|file|mimes:pdf,doc,docx|extensions:pdf,doc,docx|max:2048',
             'message' => 'nullable|string|max:5000',
+        ], [
+            'job_id.exists' => 'This role is no longer accepting applications.',
         ]);
 
         if (! empty($data['job_id'])) {

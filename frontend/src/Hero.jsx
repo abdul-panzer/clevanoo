@@ -4,32 +4,35 @@ import React, { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { RANGES, STAGES, SCROLL } from './config.js';
+import { HOME_INTRO_HTML } from './homeIntro.js';
 import { createWorld, webglAvailable } from './world.js';
 
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 const smooth = (a, b, v) => { const t = clamp((v - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
 const stageAt = (p) => (p < RANGES.sourcing[0] ? -1 : p < RANGES.screening[0] ? 0 : p < RANGES.matching[0] ? 1 : p < RANGES.placement[0] ? 2 : 3);
 
-const Arrow = () => (
-  <svg className="ico-arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 12 12 4M5.5 4H12v6.5" /></svg>
-);
-
 export default function Hero() {
   const section = useRef(null), canvas = useRef(null), intro = useRef(null), panel = useRef(null), fill = useRef(null), cue = useRef(null);
   const [active, setActive] = useState(-1);
   const [mode] = useState(() => {
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    return { reduced, webgl: Boolean(window.THREE) && webglAvailable(), small: window.matchMedia('(max-width: 720px)').matches };
+    const small = window.matchMedia('(max-width: 720px)').matches;
+    return { reduced, webgl: !small && Boolean(window.THREE) && webglAvailable(), small };
   });
-  const isStatic = mode.reduced || !mode.webgl;
+  const [worldFailed, setWorldFailed] = useState(false);
+  const isStatic = mode.reduced || !mode.webgl || worldFailed;
 
   useEffect(() => {
     const el = section.current;
     let world = null, raf = 0, shown = -1, target = 0, current = -1, activeNow = -2, tl = null;
-    if (mode.webgl) {
+    if (mode.webgl && !worldFailed) {
       try { world = createWorld(canvas.current, { lowPower: mode.small, staticView: isStatic }); }
-      catch (e) { world = null; el.classList.add('no-webgl'); }
+      catch {
+        setWorldFailed(true);
+        return undefined;
+      }
     }
+    if (isStatic && !world) return undefined;
 
     // Everything on screen is a function of p.
     function apply(p) {
@@ -87,7 +90,7 @@ export default function Hero() {
       if (tl) { if (tl.scrollTrigger) tl.scrollTrigger.kill(); tl.kill(); }
       if (world) world.dispose();
     };
-  }, []);
+  }, [isStatic, mode, worldFailed]);
 
   // Clicking a step scrolls to that stage of the journey.
   const goTo = (i) => {
@@ -99,18 +102,10 @@ export default function Hero() {
   const height = isStatic ? undefined : (mode.small ? SCROLL.mobileHeightVh : SCROLL.desktopHeightVh) + 'vh';
 
   return (
-    <section className={'journey' + (isStatic ? ' is-static' : '') + (mode.webgl ? '' : ' no-webgl')} id="home" ref={section} style={{ height }} aria-label="How Clevanoo works">
+    <section className={'journey' + (isStatic ? ' is-static' : '') + (mode.webgl && !worldFailed ? '' : ' no-webgl')} id="home" ref={section} style={{ height }} aria-label="How Clevanoo works">
       <div className="journey-sticky">
         <canvas ref={canvas} className="journey-canvas" aria-hidden="true" />
-        <div className="journey-intro" ref={intro}>
-          <p className="badge">IT Staffing &amp; Recruitment</p>
-          <h1><span className="grad">We find the talent,</span> you lead the innovation.</h1>
-          <p className="journey-lede">We bridge the gap between top-tier professionals and forward-thinking companies, creating partnerships that fuel digital transformation and lasting competitive advantage.</p>
-          <div className="btn-row">
-            <a className="btn btn-primary" href="/jobs">Browse open jobs <Arrow /></a>
-            <a className="btn btn-ghost" href="/contact">Hire talent</a>
-          </div>
-        </div>
+        <div className="journey-intro" ref={intro} dangerouslySetInnerHTML={{ __html: HOME_INTRO_HTML }} />
 
         <div className="steps" ref={panel} style={isStatic ? undefined : { opacity: 0 }}>
           <span className="steps-line" aria-hidden="true"><span className="steps-fill" ref={fill} /></span>

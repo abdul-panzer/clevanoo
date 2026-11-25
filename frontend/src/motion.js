@@ -4,6 +4,7 @@
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 const smooth = (a, b, v) => { const t = clamp((v - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
 const HEADER = 72;
+const CARD_GRIDS = '.grid-2, .grid-3, .grid-4, .case-grid, .mosaic, .stats, [data-stagger]';
 
 // gentle: inner pages — modest vertical entrances only, no drift, no section camera shots.
 export function initMotion({ gentle = false } = {}) {
@@ -36,19 +37,19 @@ export function initMotion({ gentle = false } = {}) {
 
   function collect() {
     const RULES = [
-      ['.stat', () => 'up', 4, [0, 0, 0, 0]],
-      ['.service', (i) => (i % 2 ? 'right' : 'left'), 2, [12, -12]],
-      ['.cat', () => 'zoom', 4, [-16, 8, -8, 16]],
-      ['.spec', (i) => (i % 2 ? 'right' : 'left'), 2, [10, -10]],
-      ['.tile', () => 'clip', 4, [14, -12, 12, -14]],
       ['.float-chip', (i) => (i % 2 ? 'left' : 'right'), 2, [-40, 40]],
       ['.mosaic-stat', () => 'zoom', 1, [0]],
-      ['.tip', () => 'flip', 4, [-12, 12, -12, 12]],
-      ['.quote', () => 'fan', 3, [14, -8, 14]],
       ['.story', () => 'right', 1, [-26]],
       ['.footer-grid > .reveal', () => 'up', 4, [0, 0, 0, 0]],
     ];
     const seen = new Set();
+    doc.querySelectorAll(CARD_GRIDS).forEach((grid) => {
+      Array.from(grid.children).forEach((el) => {
+        if (!el.matches('.reveal:not(.mosaic-stat, .float-chip)')) return;
+        el.classList.add('is-in');
+        seen.add(el);
+      });
+    });
     RULES.forEach(([sel, fx, cols, drift]) => {
       const plain = sel.replace('.footer-grid > ', '');
       doc.querySelectorAll(sel).forEach((el) => {
@@ -57,11 +58,6 @@ export function initMotion({ gentle = false } = {}) {
         reveals.push({ el, top: 0, h: 0, e: -1, lag: 0.15 * col, fx: fx(i), dir: cols === 3 ? col - 1 : (col < cols / 2 ? -1 : 1), drift: drift[col] || 0 });
         seen.add(el);
       });
-    });
-    doc.querySelectorAll('[data-stagger]').forEach((g) => {
-      const kids = Array.from(g.children).filter((c) => c.classList.contains('reveal') && !seen.has(c));
-      const cols = Math.max(1, Math.round(g.clientWidth / Math.max(1, (kids[0] && kids[0].offsetWidth) || g.clientWidth)));
-      kids.forEach((el, i) => { reveals.push({ el, top: 0, h: 0, e: -1, lag: 0.12 * (i % cols), fx: 'up', dir: 0, drift: 0 }); seen.add(el); });
     });
     doc.querySelectorAll('.reveal').forEach((el) => {
       if (seen.has(el)) return;
@@ -92,7 +88,11 @@ export function initMotion({ gentle = false } = {}) {
     });
     bar = doc.createElement('span'); bar.className = 'progress'; bar.setAttribute('aria-hidden', 'true');
     doc.querySelector('.site-header').appendChild(bar); cleanups.push(() => bar.remove());
-    if (!gentle) doc.querySelectorAll('.rest > section:not(.approach), .teaser').forEach((el, i) => { el.classList.add('shot'); shots.push({ el, top: 0, h: 0, k: -1, side: i % 2 ? -1 : 1 }); });
+    if (!gentle) doc.querySelectorAll('.rest > section, .teaser').forEach((el, i) => {
+      if (el.querySelector(CARD_GRIDS)) return;
+      el.classList.add('shot');
+      shots.push({ el, top: 0, h: 0, k: -1, side: i % 2 ? -1 : 1 });
+    });
   }
 
   function layout() {
@@ -131,9 +131,6 @@ export function initMotion({ gentle = false } = {}) {
       case 'left': return `perspective(1200px) translate3d(${n(-80 * k)}px,${n(22 * k)}px,0) rotateY(${n(18 * k)}deg)`;
       case 'right': return `perspective(1200px) translate3d(${n(80 * k)}px,${n(22 * k)}px,0) rotateY(${n(-18 * k)}deg)`;
       case 'zoom': return `perspective(1200px) translate3d(0,${n(36 * k)}px,${n(-160 * k)}px) rotateX(${n(10 * k)}deg)`;
-      case 'flip': return `perspective(1000px) translate3d(0,${n(30 * k)}px,0) rotateX(${n(-60 * k)}deg)`;
-      case 'fan': return `translate3d(${n(r.dir * 40 * k)}px,${n(56 * k)}px,0) rotate(${n(r.dir * 6 * k)}deg)`;
-      case 'clip': return `translate3d(0,${n(48 * k)}px,0) scale(${n(1 - 0.06 * k)})`;
       default: return `perspective(1100px) translate3d(0,${n(44 * k)}px,${n(-60 * k)}px) rotateX(${n(15 * k)}deg) rotateY(${n(r.dir * 8 * k)}deg)`;
     }
   }
@@ -144,12 +141,11 @@ export function initMotion({ gentle = false } = {}) {
       const e = atEnd ? 1 : smooth(0, 1, (y + vh - r.top) / range - r.lag);
       if (e === r.e || (e < 1 && Math.abs(e - r.e) < 0.002)) return;
       r.e = e;
-      if (e >= 1) { r.el.style.opacity = ''; r.el.style.transform = ''; r.el.style.clipPath = ''; r.el.classList.add('is-in'); return; }
+      if (e >= 1) { r.el.style.opacity = ''; r.el.style.transform = ''; r.el.classList.add('is-in'); return; }
       const k = 1 - e;
       r.el.classList.remove('is-in');
       r.el.style.opacity = Math.min(1, e * 1.4).toFixed(3);
       r.el.style.transform = entrance(r, k, small);
-      if (r.fx === 'clip') r.el.style.clipPath = `inset(${(k * 46).toFixed(1)}% 0 0 0 round 24px)`;
     });
     words.forEach((w) => {
       const raw = atEnd ? 9 : (y + vh - w.top) / (vh * 0.36), e = clamp(raw, 0, 3);

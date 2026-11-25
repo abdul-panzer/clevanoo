@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Job;
+use App\Support\JobListing;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class JobController extends Controller
 {
@@ -16,6 +18,7 @@ class JobController extends Controller
             'search' => 'nullable|string|max:255',
             'per_page' => 'nullable|integer|min:1|max:100',
             'page' => 'nullable|integer|min:1',
+            'category' => ['nullable', Rule::in(array_keys(JobListing::CATEGORY_PATTERNS))],
         ]);
         if (($search = $filters['search'] ?? '') !== '') {
             $query->where(function ($q) use ($search) {
@@ -23,13 +26,21 @@ class JobController extends Controller
                     ->orWhere('city', 'like', "%{$search}%")
                     ->orWhere('state', 'like', "%{$search}%")
                     ->orWhere('duration', 'like', "%{$search}%")
-                    ->orWhere('bill_rate', 'like', "%{$search}%")
                     ->orWhere('description', 'like', "%{$search}%");
             });
         }
+        if ($category = $filters['category'] ?? null) {
+            $pattern = JobListing::CATEGORY_PATTERNS[$category];
+            $matching = (clone $query)->select(['id', 'jobtitle'])->lazyById()
+                ->filter(static fn (Job $job): bool => preg_match($pattern, $job->jobtitle) === 1)
+                ->pluck('id')->all();
+            $query->whereIntegerInRaw('id', $matching);
+        }
         $query->orderByDesc('created_at')->orderByDesc('id');
         $perPage = $filters['per_page'] ?? 10;
-        $jobs = $query->paginate($perPage);
+        $jobs = $query->paginate($perPage)->through(static fn (Job $job): array => $job->toArray() + [
+            'facts' => JobListing::facts($job),
+        ]);
 
         return response()->json($jobs, 200);
     }
@@ -59,7 +70,10 @@ class JobController extends Controller
     // Show a specific job
     public function show(Job $job)
     {
-        return response()->json($job, 200);
+        return response()->json($job->toArray() + [
+            'facts' => JobListing::facts($job),
+            'sections' => JobListing::sections($job),
+        ]);
     }
 
     // Update a job

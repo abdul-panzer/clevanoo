@@ -4,3 +4,4 @@ Disallow: /jobUpload
 Disallow: /unsubscribe-email
 
 Sitemap: https://clevanoo.com/sitemap.xml
+Sitemap: https://clevanoo.com/jobs-sitemap.xml

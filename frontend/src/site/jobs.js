@@ -9,12 +9,16 @@ function jobUrl(job) {
 
 function showFacts(list, job) {
   list.replaceChildren();
-  for (const [label, value] of [['City', job.city], ['State', job.state], ['Duration', job.duration], ['Bill Rate', 'DOE']]) {
+  const city = job.city?.trim();
+  const state = job.state?.trim();
+  const location = city?.toLowerCase() === state?.toLowerCase() ? city : [city, state].filter(Boolean).join(', ');
+  for (const [label, value] of Object.entries(job.facts || { Location: location, Duration: job.duration })) {
+    if (!value) continue;
     const row = document.createElement('div');
     const term = document.createElement('dt');
     const detail = document.createElement('dd');
     term.textContent = label;
-    detail.textContent = value || 'See job details';
+    detail.textContent = value;
     row.append(term, detail);
     list.append(row);
   }
@@ -38,6 +42,7 @@ function jobCard(template, job) {
 function initJobList(list) {
   const template = document.getElementById('job-card');
   const search = document.getElementById('job-search');
+  const category = document.getElementById('job-category');
   const prev = document.getElementById('job-prev');
   const next = document.getElementById('job-next');
   const select = document.getElementById('job-page');
@@ -48,6 +53,10 @@ function initJobList(list) {
   let requestedPage = 1;
   let timer;
   let controller;
+  const readCategory = () => {
+    category.value = new URLSearchParams(location.search).get('category') || '';
+    if (category.selectedIndex < 0) category.selectedIndex = 0;
+  };
 
   function startLoading() {
     controller?.abort();
@@ -66,6 +75,7 @@ function initJobList(list) {
     const term = search.value.trim();
     const params = new URLSearchParams({ page: targetPage, per_page: pageSize });
     if (term) params.set('search', term);
+    if (category.value) params.set('category', category.value);
     try {
       const payload = await request('/all-jobs?' + params, { signal: current.signal });
       if (current.signal.aborted) return;
@@ -82,7 +92,7 @@ function initJobList(list) {
       list.replaceChildren(...payload.data.map((job) => jobCard(template, job)));
       status.textContent = total
         ? (total === 1 ? '1 job found' : total + ' jobs found')
-        : (term ? 'No jobs match your search.' : 'There are no open roles right now.');
+        : (term || category.value ? 'No jobs match these filters.' : 'There are no open roles right now.');
       const start = Math.max(1, Math.min(page - 3, pages - 7));
       const options = Array.from({ length: Math.min(pages, 8) }, (_, index) => {
         const number = start + index;
@@ -106,10 +116,19 @@ function initJobList(list) {
     startLoading();
     timer = setTimeout(() => load(1), 250);
   });
+  category.addEventListener('change', () => {
+    clearTimeout(timer);
+    const url = new URL(location.href);
+    if (category.value) url.searchParams.set('category', category.value);
+    else url.searchParams.delete('category');
+    history.replaceState(history.state, '', url);
+    load(1);
+  });
   prev.addEventListener('click', () => load(page - 1));
   next.addEventListener('click', () => load(page + 1));
   select.addEventListener('change', () => load(Number(select.value)));
   retry.addEventListener('click', () => load(requestedPage));
+  readCategory();
   load(1);
 }
 
@@ -118,6 +137,10 @@ async function initJobDetail(detail) {
   const id = location.pathname.match(/^\/job\/([1-9]\d*)\/?$/)?.[1];
   if (!id) {
     status.textContent = 'This job link is invalid.';
+    return;
+  }
+  if (detail.dataset.jobId === id) {
+    initJobApplication(id);
     return;
   }
   let job;
@@ -132,11 +155,32 @@ async function initJobDetail(detail) {
   }
   document.title = job.jobtitle + ' – Clevanoo LLC';
   document.getElementById('job-title').textContent = job.jobtitle;
-  document.getElementById('job-description').textContent = job.description || 'Contact Clevanoo for more information about this role.';
+  const description = document.getElementById('job-description');
+  for (const [heading, value] of Object.entries(job.sections || { Overview: job.description })) {
+    if (!value) continue;
+    if (heading !== 'Overview') {
+      const title = document.createElement('h3');
+      title.className = 'h-card';
+      title.textContent = heading;
+      description.append(title);
+    }
+    const text = document.createElement('p');
+    text.textContent = value;
+    description.append(text);
+  }
+  if (!description.children.length) {
+    const text = document.createElement('p');
+    text.textContent = 'Contact Clevanoo for more information about this role.';
+    description.append(text);
+  }
   showFacts(document.getElementById('job-facts'), job);
   status.hidden = true;
   detail.hidden = false;
 
+  initJobApplication(id);
+}
+
+function initJobApplication(id) {
   const form = document.getElementById('apply');
   initForm(form, (data) => {
     data.set('job_id', id);
@@ -158,6 +202,7 @@ export function initJobs() {
 
 export async function initLatestJobs(list) {
   if (!list) return;
+  list.textContent = 'Loading jobs…';
   try {
     const payload = await request('/all-jobs?per_page=3');
     if (!Array.isArray(payload.data)) throw new Error('Unexpected job data');

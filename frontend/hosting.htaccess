@@ -5,9 +5,26 @@ ErrorDocument 404 /404.html
     RewriteEngine On
     RewriteBase /
 
-    # Redirect HTTP to HTTPS.
-    RewriteCond %{HTTPS} off
-    RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+    # Redirect requests for generated HTML files. Leave internal rewrites alone.
+    RewriteCond %{THE_REQUEST} \s/+index\.html(?:[?\s])
+    RewriteRule ^index\.html$ https://clevanoo.com/ [R=301,L]
+    RewriteCond %{THE_REQUEST} \s/+[^?\s]+\.html(?:[?\s])
+    RewriteRule ^(about|services|zendesk|industries|jobs|contact|faq|unsubscribe-email)\.html$ https://clevanoo.com/$1 [R=301,L]
+    RewriteCond %{THE_REQUEST} \s/+zendesk-case-studies\.html(?:[?\s])
+    RewriteRule ^zendesk-case-studies\.html$ https://clevanoo.com/case-studies [R=301,L]
+    RewriteCond %{THE_REQUEST} \s/+specialities\.html(?:[?\s])
+    RewriteRule ^specialities\.html$ https://clevanoo.com/speciality [R=301,L]
+    RewriteCond %{THE_REQUEST} \s/+job-upload\.html(?:[?\s])
+    RewriteRule ^job-upload\.html$ https://clevanoo.com/jobUpload [R=301,L]
+
+    # Use the clean route and canonical host in the same redirect.
+    RewriteRule ^(about|services|zendesk|industries|jobs|contact|faq|unsubscribe-email|case-studies|speciality|job/[1-9][0-9]*)/$ https://clevanoo.com/$1 [R=301,L]
+    RewriteCond %{REQUEST_URI} !^/jobUpload$
+    RewriteRule ^jobUpload/?$ https://clevanoo.com/jobUpload [R=301,L,NC]
+
+    RewriteCond %{HTTPS} off [OR]
+    RewriteCond %{HTTP_HOST} ^www\.clevanoo\.com(?::[0-9]+)?$ [NC]
+    RewriteRule ^ https://clevanoo.com%{REQUEST_URI} [R=301,L]
 
     # Let Laravel's own rules handle backend requests.
     RewriteRule ^backend(?:/|$) - [L]
@@ -17,5 +34,5 @@ ErrorDocument 404 /404.html
     RewriteRule ^(about|services|zendesk|industries|jobs|contact|faq|unsubscribe-email)/?$ $1.html [END]
     RewriteRule ^case-studies/?$ zendesk-case-studies.html [END]
     RewriteRule ^speciality/?$ specialities.html [END]
-    RewriteRule ^job/[1-9][0-9]*/?$ job.html [END]
+    RewriteRule ^(?:job/[1-9][0-9]*|jobs-sitemap\.xml)$ backend/public/index.php [END]
 </IfModule>

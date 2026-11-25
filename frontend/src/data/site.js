@@ -1,5 +1,30 @@
+export const SITE_ORIGIN = 'https://clevanoo.com';
+export const SHARE_IMAGE = SITE_ORIGIN + '/assets/clevanoo-social.jpg';
+
+export const CORPORATION_SCHEMA = {
+  '@context': 'https://schema.org',
+  '@type': 'Corporation',
+  '@id': `${SITE_ORIGIN}/#organization`,
+  name: 'Clevanoo LLC',
+  alternateName: 'Clevanoo',
+  url: `${SITE_ORIGIN}/`,
+  logo: `${SITE_ORIGIN}/assets/clevanoo-logo.png`,
+  contactPoint: {
+    '@type': 'ContactPoint',
+    telephone: '+1-949-570-4008',
+    contactType: 'sales',
+    areaServed: 'US',
+    availableLanguage: 'en',
+  },
+  sameAs: [
+    'https://www.facebook.com/clevanoollc',
+    'https://www.instagram.com/clevanoollc/',
+    'https://www.linkedin.com/company/clevanoo-llc',
+  ],
+};
+
 export const PAGES = {
-  home: { path: '/', file: 'index.html', title: 'Clevanoo – IT Staffing & Recruitment', description: 'Connect with experienced technology professionals or find your next role with Clevanoo.' },
+  home: { path: '/', file: 'index.html', title: 'Clevanoo – Technology & Professional Staffing', description: 'Hire talent or find your next role in technology, engineering, manufacturing, accounting and finance, or healthcare with Clevanoo.' },
   about: { path: '/about', file: 'about.html', title: 'About – Clevanoo LLC', description: 'Meet Clevanoo and learn how we approach IT staffing and recruitment.' },
   services: { path: '/services', file: 'services.html', title: 'Our Services – Clevanoo LLC', group: 'services', description: 'Explore direct hire, contract staffing, talent matching, and workforce consulting.' },
   zendesk: { path: '/zendesk', file: 'zendesk.html', title: 'Zendesk – Clevanoo LLC', group: 'services', description: 'Enterprise Zendesk implementation, consulting, integrations, and managed services.' },
