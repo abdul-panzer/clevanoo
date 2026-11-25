@@ -15,9 +15,9 @@ class WebsiteEmailEndpoint
     {
         $data = $request->validate([
             'type' => ['required', 'string', Rule::in(['contact', 'unsubscribe', 'subscription'])],
-            'name' => ['required_unless:type,subscription', 'nullable', 'string', 'max:255'],
+            'name' => ['required_if:type,contact', 'nullable', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255'],
-            'phone' => ['required_if:type,unsubscribe', 'nullable', 'string', 'max:30'],
+            'phone' => ['nullable', 'string', 'max:30'],
             'message' => ['required_if:type,contact', 'nullable', 'string', 'max:5000'],
         ]);
 
@@ -32,6 +32,8 @@ class WebsiteEmailEndpoint
             return response()->json(['error' => 'Failed to send email. Please try again later.'], 502);
         }
 
-        return response()->json(['message' => 'Email sent successfully.']);
+        return response()->json(['message' => $data['type'] === 'unsubscribe'
+            ? 'We received your unsubscribe request.'
+            : 'Email sent successfully.']);
     }
 }

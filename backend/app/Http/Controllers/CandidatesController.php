@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Candidate;
 use App\Models\Job;
+use App\Support\PublicJobs;
 use App\Services\WebsiteEmailService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Validation\ValidationException;
 use RuntimeException;
 use Throwable;
 
@@ -24,31 +26,38 @@ class CandidatesController extends Controller
             'last_name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
             'phone' => 'required|string|max:20',
-            'job_id' => 'nullable|integer|exists:clevanoo_jobs,id',
-            'position_applied_for' => 'required_without:job_id|nullable|string|max:255',
+            'job_id' => 'required|integer|min:1',
             'visa_type' => 'nullable|string|max:255',
             'state' => 'nullable|string|max:255',
             'resume' => 'required|file|mimes:pdf,doc,docx|extensions:pdf,doc,docx|max:2048',
             'message' => 'nullable|string|max:5000',
-        ], [
-            'job_id.exists' => 'This role is no longer accepting applications.',
         ]);
-
-        if (! empty($data['job_id'])) {
-            $data['position_applied_for'] = Job::findOrFail($data['job_id'])->jobtitle;
-        }
-        unset($data['job_id'], $data['resume']);
+        unset($data['resume']);
 
         $path = null;
         try {
-            $path = $request->file('resume')->store('resumes', 'public');
-            if (! $path) {
-                throw new RuntimeException('Résumé storage failed.');
-            }
-            $candidate = Candidate::create($data + ['resume_path' => $path]);
+            $candidate = PublicJobs::locked(function () use ($request, &$data, &$path): Candidate {
+                $job = PublicJobs::active()->whereKey($data['job_id'])->first();
+                if (! $job) {
+                    throw ValidationException::withMessages(['job_id' => 'This role is no longer accepting applications.']);
+                }
+                $data['position_applied_for'] = $job->jobtitle;
+                // Reuse the uploaded file if Laravel retries the transaction after a database conflict.
+                if (! $path) {
+                    $path = $request->file('resume')->store('resumes', 'public');
+                }
+                if (! $path) {
+                    throw new RuntimeException('Résumé storage failed.');
+                }
+
+                return Candidate::create($data + ['resume_path' => $path]);
+            });
         } catch (Throwable $exception) {
             if ($path) {
                 Storage::disk('public')->delete($path);
+            }
+            if ($exception instanceof ValidationException) {
+                throw $exception;
             }
             Log::error('Candidate application could not be saved.', ['exception_type' => $exception::class]);
 

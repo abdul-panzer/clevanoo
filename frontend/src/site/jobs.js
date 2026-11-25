@@ -3,8 +3,9 @@ import { initForm } from './forms.js';
 
 const pageSize = 6;
 
-function jobUrl(job) {
-  return '/job/' + encodeURIComponent(job.id);
+function jobUrl(job, from) {
+  const url = '/job/' + encodeURIComponent(job.id);
+  return from && from !== '/jobs' ? url + '?from=' + encodeURIComponent(from) : url;
 }
 
 function showFacts(list, job) {
@@ -24,7 +25,7 @@ function showFacts(list, job) {
   }
 }
 
-function jobCard(template, job) {
+function jobCard(template, job, from) {
   const card = template.content.firstElementChild.cloneNode(true);
   card.querySelector('h3').textContent = job.jobtitle;
   const description = job.description?.trim() || '';
@@ -32,9 +33,9 @@ function jobCard(template, job) {
   showFacts(card.querySelector('dl'), job);
   const detail = card.querySelector('.btn-outline');
   const apply = card.querySelector('.btn-primary');
-  detail.href = jobUrl(job);
+  detail.href = jobUrl(job, from);
   detail.setAttribute('aria-label', 'Read more about ' + job.jobtitle);
-  apply.href = jobUrl(job) + '#apply';
+  apply.href = jobUrl(job, from) + '#apply';
   apply.setAttribute('aria-label', 'Apply for ' + job.jobtitle);
   return card;
 }
@@ -49,27 +50,48 @@ function initJobList(list) {
   const status = document.getElementById('job-status');
   const retry = document.getElementById('job-retry');
   const pager = document.getElementById('job-pager');
+  document.getElementById('job-server-pager')?.setAttribute('hidden', '');
   let page = 1;
   let requestedPage = 1;
   let timer;
   let controller;
-  const readCategory = () => {
-    category.value = new URLSearchParams(location.search).get('category') || '';
+  const readUrl = () => {
+    const params = new URLSearchParams(location.search);
+    search.value = (params.get('search') || '').trim().slice(0, 255);
+    category.value = params.get('category') || '';
     if (category.selectedIndex < 0) category.selectedIndex = 0;
+    const number = params.get('page') || '1';
+    return /^[1-9]\d*$/.test(number) ? Math.min(8, Number(number)) : 1;
   };
 
-  function startLoading() {
-    controller?.abort();
-    pager.hidden = true;
-    retry.hidden = true;
-    list.replaceChildren();
-    list.setAttribute('aria-busy', 'true');
-    status.textContent = 'Loading jobs…';
+  function listingUrl(targetPage) {
+    const params = new URLSearchParams();
+    if (search.value.trim()) params.set('search', search.value.trim());
+    if (category.value) params.set('category', category.value);
+    if (targetPage > 1) params.set('page', targetPage);
+    const query = params.toString();
+    return '/jobs' + (query ? '?' + query : '');
   }
 
-  async function load(targetPage) {
+  function writeUrl(targetPage, mode) {
+    const url = listingUrl(targetPage);
+    if (location.pathname + location.search !== url) history[mode + 'State'](null, '', url);
+    return url;
+  }
+
+  function moveFocusIfUnavailable(origin) {
+    if (origin && document.activeElement === origin && (origin.disabled || origin.hidden || origin.closest('[hidden]'))) {
+      status.focus();
+    }
+  }
+
+  async function load(targetPage, mode = 'replace', origin = null) {
     requestedPage = targetPage;
-    startLoading();
+    const from = writeUrl(targetPage, mode);
+    controller?.abort();
+    if (origin !== retry) retry.hidden = true;
+    list.setAttribute('aria-busy', 'true');
+    status.textContent = 'Loading jobs…';
     const current = new AbortController();
     controller = current;
     const term = search.value.trim();
@@ -84,52 +106,63 @@ function initJobList(list) {
         throw new Error('Unexpected job data');
       }
       if (targetPage > payload.last_page) {
-        await load(payload.last_page);
+        await load(payload.last_page, 'replace', origin);
         return;
       }
       page = targetPage;
       const { total, last_page: pages } = payload;
-      list.replaceChildren(...payload.data.map((job) => jobCard(template, job)));
+      list.replaceChildren(...payload.data.map((job) => jobCard(template, job, from)));
       status.textContent = total
         ? (total === 1 ? '1 job found' : total + ' jobs found')
         : (term || category.value ? 'No jobs match these filters.' : 'There are no open roles right now.');
-      const start = Math.max(1, Math.min(page - 3, pages - 7));
       const options = Array.from({ length: Math.min(pages, 8) }, (_, index) => {
-        const number = start + index;
+        const number = index + 1;
         return new Option('Page ' + number, number, false, number === page);
       });
       select.replaceChildren(...options);
+      if (document.activeElement === origin &&
+          ((origin === prev && page === 1) || (origin === next && page === pages) || (pager.contains(origin) && pages <= 1) || origin === retry)) {
+        status.focus();
+      }
       prev.disabled = page <= 1;
       next.disabled = page >= pages;
       pager.hidden = pages <= 1 || total === 0;
+      retry.hidden = true;
     } catch {
       if (current.signal.aborted) return;
+      if (origin && document.activeElement === origin && pager.contains(origin)) status.focus();
+      pager.hidden = true;
+      list.replaceChildren();
       status.textContent = 'Current openings could not be loaded.';
       retry.hidden = false;
     } finally {
+      moveFocusIfUnavailable(origin);
       if (controller === current && !current.signal.aborted) list.removeAttribute('aria-busy');
     }
   }
 
   search.addEventListener('input', () => {
     clearTimeout(timer);
-    startLoading();
-    timer = setTimeout(() => load(1), 250);
+    controller?.abort();
+    timer = setTimeout(() => load(1, 'push', search), 250);
   });
   category.addEventListener('change', () => {
     clearTimeout(timer);
-    const url = new URL(location.href);
-    if (category.value) url.searchParams.set('category', category.value);
-    else url.searchParams.delete('category');
-    history.replaceState(history.state, '', url);
-    load(1);
+    load(1, 'push', category);
   });
-  prev.addEventListener('click', () => load(page - 1));
-  next.addEventListener('click', () => load(page + 1));
-  select.addEventListener('change', () => load(Number(select.value)));
-  retry.addEventListener('click', () => load(requestedPage));
-  readCategory();
-  load(1);
+  document.getElementById('job-filters').addEventListener('submit', (event) => {
+    event.preventDefault();
+    clearTimeout(timer);
+    load(1, 'push', document.activeElement);
+  });
+  prev.addEventListener('click', () => { clearTimeout(timer); load(page - 1, 'push', prev); });
+  next.addEventListener('click', () => { clearTimeout(timer); load(page + 1, 'push', next); });
+  select.addEventListener('change', () => { clearTimeout(timer); load(Number(select.value), 'push', select); });
+  retry.addEventListener('click', () => load(requestedPage, 'replace', retry));
+  const restore = () => { clearTimeout(timer); load(readUrl()); };
+  addEventListener('popstate', restore);
+  addEventListener('pageshow', (event) => { if (event.persisted) restore(); });
+  restore();
 }
 
 async function initJobDetail(detail) {
@@ -204,10 +237,10 @@ export async function initLatestJobs(list) {
   if (!list) return;
   list.textContent = 'Loading jobs…';
   try {
-    const payload = await request('/all-jobs?per_page=3');
+    const payload = await request('/all-jobs');
     if (!Array.isArray(payload.data)) throw new Error('Unexpected job data');
     const template = document.getElementById('job-card');
-    list.replaceChildren(...payload.data.map((job) => jobCard(template, job)));
+    list.replaceChildren(...payload.data.slice(0, 3).map((job) => jobCard(template, job)));
     if (!payload.data.length) list.textContent = 'There are no open roles right now.';
   } catch {
     list.textContent = 'Current openings could not be loaded.';

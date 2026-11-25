@@ -22,7 +22,7 @@ const JobUploadPage = ({ apiBaseUrl }) => {
     // Pagination state
     const [currentPage, setCurrentPage] = useState(1);
     const [totalJobs, setTotalJobs] = useState(0);
-    const jobsPerPage = 20;
+    const jobsPerPage = 6;
 
     // Fetch jobs with pagination and search
     const fetchJobs = async (page = 1, searchTerm = '') => {
@@ -35,10 +35,10 @@ const JobUploadPage = ({ apiBaseUrl }) => {
                     search: searchTerm.trim()
                 }
             });
-            // Assuming API returns { data: [...jobs], total: 100, current_page: 1 }
-            setJobs(response.data.data);
-            setTotalJobs(response.data.total);
-            setCurrentPage(response.data.current_page);
+            const { data, total, current_page: current, last_page: last } = response.data;
+            setJobs(data);
+            setTotalJobs(total);
+            setCurrentPage(Math.min(current, last));
         } catch (error) {
             console.error("Error fetching jobs:", error);
         } finally {
@@ -134,20 +134,15 @@ const JobUploadPage = ({ apiBaseUrl }) => {
         }
     };
 
-    const handleDelete = async (id) => {
-        if (!window.confirm("Are you sure you want to delete this job?")) return;
+    const handleCloseJob = async (id) => {
+        if (!window.confirm("Close this job to public applications?")) return;
         try {
             await axios.delete(`${JOB_DELETE_URL}/${id}`);
-            alert("Job deleted successfully");
-            // Refresh jobs - if deleting last item on page, go to prev page if needed
-            if (jobs.length === 1 && currentPage > 1) {
-                setCurrentPage(currentPage - 1);
-            } else {
-                fetchJobs(currentPage, search);
-            }
+            alert("Job closed successfully");
+            fetchJobs(currentPage, search);
         } catch (error) {
-            console.error("Delete error:", error);
-            alert("Failed to delete the job. Please try again.");
+            console.error("Close job error:", error);
+            alert("Failed to close the job. Please try again.");
         }
     };
 
@@ -206,9 +201,9 @@ const JobUploadPage = ({ apiBaseUrl }) => {
                                                     </button>
                                                     <button
                                                         className="btn btn-danger"
-                                                        onClick={() => handleDelete(job.id)}
+                                                        onClick={() => handleCloseJob(job.id)}
                                                     >
-                                                        Delete
+                                                        Close
                                                     </button>
                                                 </td>
                                             </tr>

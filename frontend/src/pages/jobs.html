@@ -2,20 +2,22 @@
   <section class="page-hero tall" data-scene="network" data-dim="0.22">
     <div class="wrap">
       <h1 class="center reveal">Current Job Openings</h1>
-      <div class="jobs-tools reveal">
+      <form class="jobs-tools reveal" id="job-filters" action="/jobs" method="get">
         <label for="job-search" class="h-card lg">Search jobs</label>
-        <input id="job-search" class="input" type="search" placeholder="Job title, skill, or location" autocomplete="off" aria-controls="job-list">
+        <input id="job-search" name="search" class="input" type="search" placeholder="Job title, skill, or location" autocomplete="off" maxlength="255" aria-controls="job-list">
         <label for="job-category">Category</label>
-        <select id="job-category" class="input select" aria-controls="job-list">
+        <select id="job-category" name="category" class="input select" aria-controls="job-list">
           <option value="">All categories</option>
           <option value="accounting-finance">Accounting &amp; Finance</option>
           <option value="technology">Technology</option>
           <option value="telecommunications">Telecommunications</option>
           <option value="healthcare">Healthcare</option>
         </select>
-      </div>
-      <p class="job-empty" id="job-status" role="status">Loading jobs…</p>
-      <div class="grid-3 job-grid" id="job-list" aria-busy="true"></div>
+        <noscript><button class="btn btn-primary" type="submit">Search jobs</button></noscript>
+      </form>
+      <p class="job-empty" id="job-status" role="status" tabindex="-1"><!-- jobs-status --></p>
+      <div class="grid-3 job-grid" id="job-list" aria-busy="false"><!-- jobs-results --></div>
+      <!-- jobs-pages -->
       <button type="button" class="btn btn-outline job-retry" id="job-retry" hidden>Try again</button>
       <nav class="pager" id="job-pager" aria-label="Job listing pages" hidden>
         <button type="button" class="btn btn-ghost" id="job-prev">Previous</button>

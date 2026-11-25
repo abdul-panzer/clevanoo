@@ -12,6 +12,7 @@ class Candidate extends Model
         'email',
         'phone',
         'position_applied_for',
+        'job_id',
         'visa_type',
         'state',
         'resume_path',

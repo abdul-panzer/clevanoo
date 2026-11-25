@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Job;
 use App\Support\JobListing;
+use App\Support\PublicJobs;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Str;
 
@@ -27,14 +29,74 @@ class JobPostingController extends Controller
         'WV' => 'WEST VIRGINIA', 'WI' => 'WISCONSIN', 'WY' => 'WYOMING',
     ];
 
-    public function show(string $id): Response
+    public function index(Request $request): Response
     {
-        $job = Job::find($id);
+        $filters = PublicJobs::filters($request->query());
+        $jobs = PublicJobs::page(...$filters);
+        if ($filters['page'] > $jobs->lastPage()) {
+            $filters['page'] = $jobs->lastPage();
+            $jobs = PublicJobs::page(...$filters);
+        }
+
+        $return = PublicJobs::listingUrl($filters);
+        $cards = '';
+        foreach ($jobs as $job) {
+            $title = e($job->jobtitle);
+            $description = e(Str::limit(trim((string) $job->description), 180, '…'));
+            $facts = $this->factsHtml(JobListing::facts($job));
+            $url = e('/job/'.$job->id.($return === '/jobs' ? '' : '?from='.rawurlencode($return)));
+            $cards .= <<<HTML
+            <article class="job-card">
+              <h3>{$title}</h3><p class="job-desc">{$description}</p><dl class="job-facts">{$facts}</dl>
+              <div class="job-actions">
+                <a class="btn btn-outline" href="{$url}" aria-label="Read more about {$title}">Read more</a>
+                <a class="btn btn-primary" href="{$url}#apply" aria-label="Apply for {$title}">Apply</a>
+              </div>
+            </article>
+            HTML;
+        }
+
+        $pages = '';
+        if ($jobs->lastPage() > 1) {
+            for ($page = 1; $page <= $jobs->lastPage(); $page++) {
+                $url = e(PublicJobs::listingUrl(array_replace($filters, ['page' => $page])));
+                $current = $page === $filters['page'] ? ' aria-current="page"' : '';
+                $pages .= '<a class="btn btn-ghost" href="'.$url.'"'.$current.'>Page '.$page.'</a>';
+            }
+            $pages = '<nav class="pager" id="job-server-pager" aria-label="Job listing pages">'.$pages.'</nav>';
+        }
+        $total = $jobs->total();
+        $status = match (true) {
+            $total === 1 => '1 job found',
+            $total > 1 => $total.' jobs found',
+            $filters['search'] !== '' || $filters['category'] !== '' => 'No jobs match these filters.',
+            default => 'There are no open roles right now.',
+        };
+        $replacements = [
+            '<!-- jobs-status -->' => $status,
+            '<!-- jobs-results -->' => $cards,
+            '<!-- jobs-pages -->' => $pages,
+            'id="job-search" name=' => 'id="job-search" value="'.e($filters['search']).'" name=',
+        ];
+        if ($filters['category'] !== '') {
+            $option = '<option value="'.$filters['category'].'"';
+            $replacements[$option] = $option.' selected';
+        }
+
+        return response(strtr($this->template('jobs.html'), $replacements))->header('Cache-Control', 'private, no-store');
+    }
+
+    public function show(Request $request, string $id): Response
+    {
+        $backUrl = e(PublicJobs::returnUrl($request->query('from')));
+        $job = PublicJobs::active()->whereKey($id)->first();
         if (! $job) {
             $closedPage = $this->template('404.html');
 
-            return response(str_replace('The page may have moved or the address may be incorrect.',
-                'This role is no longer available. Browse our jobs for other openings.', $closedPage), 404)
+            return response(strtr($closedPage, [
+                'The page may have moved or the address may be incorrect.' => 'This role is no longer accepting applications. Browse current openings for other opportunities.',
+                'href="/jobs">Browse jobs' => 'href="'.$backUrl.'">Browse current openings',
+            ]), 404)
                 ->header('Cache-Control', 'no-store, private');
         }
 
@@ -82,24 +144,22 @@ class JobPostingController extends Controller
                 'identifier' => ['@type' => 'PropertyValue', 'name' => 'Clevanoo LLC', 'value' => (string) $job->id],
             ] + $location;
             $head .= '<script type="application/ld+json">'.json_encode($schema, JSON_HEX_TAG | JSON_THROW_ON_ERROR)."</script>\n";
+        } else {
+            $head .= '<meta name="robots" content="noindex">'."\n";
         }
 
         $facts = JobListing::facts($job) + ['Posted' => $posted];
         if (isset($location['applicantLocationRequirements'])) {
             $facts['Location'] = 'Remote (United States)';
         }
-        $factsHtml = '';
-        foreach (array_filter($facts) as $label => $value) {
-            $factsHtml .= '<div><dt>'.e($label).'</dt><dd>'.e($value).'</dd></div>';
-        }
-
         $oldHead = substr($template, $headStart, $headEnd + strlen('<!-- /job-head -->') - $headStart);
         $html = strtr($template, [
             $oldHead => $head,
             '<!-- job-status --><p' => '<p hidden',
             '<div id="job-detail" hidden>' => '<div id="job-detail" data-job-id="'.$id.'">',
             '<!-- job-title -->' => e($jobTitle),
-            '<!-- job-facts -->' => $factsHtml,
+            '<!-- job-facts -->' => $this->factsHtml($facts),
+            'id="back-to-jobs" href="/jobs"' => 'id="back-to-jobs" href="'.$backUrl.'"',
             '<!-- job-description -->' => $descriptionHtml ?: '<p>Contact Clevanoo for more information about this role.</p>',
             '<!-- job-id -->' => '<input type="hidden" name="job_id" value="'.$id.'">',
             'id="apply" method="post"' => 'id="apply" action="/backend/public/api/save-candidates" method="post"',
@@ -112,7 +172,7 @@ class JobPostingController extends Controller
     public function sitemap(): Response
     {
         $xml = ["<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n", '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'];
-        foreach (Job::query()->select('id', 'jobtitle', 'description', 'city', 'state', 'created_at', 'updated_at')->lazyById() as $job) {
+        foreach (PublicJobs::active()->get(['id', 'jobtitle', 'description', 'city', 'state', 'created_at', 'updated_at']) as $job) {
             if (! $this->isEligible($job, $this->location($job))) {
                 continue;
             }
@@ -123,6 +183,16 @@ class JobPostingController extends Controller
         $xml[] = '</urlset>';
 
         return response(implode("\n", $xml), 200, ['Content-Type' => 'application/xml; charset=UTF-8', 'Cache-Control' => 'no-store, private']);
+    }
+
+    private function factsHtml(array $facts): string
+    {
+        $html = '';
+        foreach (array_filter($facts) as $label => $value) {
+            $html .= '<div><dt>'.e($label).'</dt><dd>'.e($value).'</dd></div>';
+        }
+
+        return $html;
     }
 
     private function isEligible(Job $job, array $location): bool

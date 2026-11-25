@@ -103,7 +103,7 @@ const JobDetailPage = () => {
     formDataToSend.append('last_name', formData.lastName);
     formDataToSend.append('email', formData.email);
     formDataToSend.append('phone', formData.phone);
-    formDataToSend.append('position_applied_for', job.jobtitle);
+    formDataToSend.append('job_id', job.id);
     formDataToSend.append('resume', formData.resume);
 
     if (formData.visaType.trim()) formDataToSend.append('visa_type', formData.visaType.trim());

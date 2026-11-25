@@ -62,13 +62,88 @@ test('the deployed jobs bundle reads the category link and combines it with sear
     await new Promise((resolve) => setTimeout(resolve, 300));
     assert.equal(requests.at(-1).get('category'), 'technology');
     assert.equal(requests.at(-1).get('search'), 'Snowflake');
-    assert.equal(document.querySelector('#job-list .btn-primary').getAttribute('href'), '/job/1#apply');
+    const applyUrl = new URL(document.querySelector('#job-list .btn-primary').href);
+    assert.equal(applyUrl.pathname + applyUrl.hash, '/job/1#apply');
+    assert.equal(applyUrl.searchParams.get('from'), '/jobs?search=Snowflake&category=technology');
     assert.match(document.querySelector('#job-list dl').textContent, /LocationRemote/);
     assert.doesNotMatch(document.querySelector('#job-list').textContent, /Bill Rate|DOE/);
     category.value = '';
     category.dispatchEvent(new window.Event('change'));
     assert.equal(new URL(window.location.href).searchParams.has('category'), false);
     assert.equal(requests.at(-1).has('category'), false);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+  } finally {
+    window.close();
+  }
+});
+
+test('paging stores URL history, keeps keyboard focus, and recovers from an API error', async () => {
+  const { window } = page('jobs.html', {
+    url: 'https://clevanoo.com/jobs', runScripts: 'outside-only', pretendToBeVisual: true,
+  });
+  try {
+    const { document } = window;
+    let fail = false;
+    window.matchMedia = () => ({ matches: true });
+    window.fetch = async (path) => {
+      if (fail) throw new Error('Test network failure');
+      const page = Number(new URL(path, window.location.href).searchParams.get('page'));
+      return { ok: true, json: async () => ({ total: 48, last_page: 8, data: Array.from({ length: 6 }, (_, index) => ({
+        id: (page - 1) * 6 + index + 1, jobtitle: 'Role '+page+'-'+index, description: 'Test position',
+      })) }) };
+    };
+    const bundle = document.querySelector('script[src^="/frontend-assets/inner."]').getAttribute('src').slice(1);
+    const settle = () => new Promise((resolve) => setTimeout(resolve, 10));
+    window.eval(readBuild(bundle));
+    await settle();
+    const next = document.getElementById('job-next');
+    const prev = document.getElementById('job-prev');
+    const select = document.getElementById('job-page');
+    const status = document.getElementById('job-status');
+    const retry = document.getElementById('job-retry');
+    assert.equal(prev.disabled, true);
+    next.focus();
+    next.click();
+    await settle();
+    assert.equal(window.location.search, '?page=2');
+    assert.equal(document.activeElement, next);
+    prev.focus();
+    prev.click();
+    await settle();
+    assert.equal(document.activeElement, status);
+    assert.equal(prev.disabled, true);
+    const navigateHistory = async (direction) => {
+      const moved = new Promise((resolve) => window.addEventListener('popstate', resolve, { once: true }));
+      window.history[direction]();
+      await moved;
+      await settle();
+    };
+    await navigateHistory('back');
+    assert.equal(select.value, '2');
+    await navigateHistory('forward');
+    assert.equal(select.value, '1');
+    select.focus();
+    select.value = '7';
+    select.dispatchEvent(new window.Event('change'));
+    await settle();
+    assert.equal(document.activeElement, select);
+    next.focus();
+    next.click();
+    await settle();
+    assert.equal(next.disabled, true);
+    assert.equal(document.activeElement, status);
+    fail = true;
+    prev.focus();
+    prev.click();
+    await settle();
+    assert.equal(retry.hidden, false);
+    assert.match(status.textContent, /could not be loaded/);
+    fail = false;
+    retry.focus();
+    retry.click();
+    await settle();
+    assert.equal(document.getElementById('job-list').children.length, 6);
+    assert.equal(document.activeElement, status);
   } finally {
     window.close();
   }
@@ -83,6 +158,12 @@ test('application and sitemap output stay ready for deployment', () => {
     assert.match(document.getElementById('resume-privacy').textContent, /review your application/);
     assert.match(readBuild('sitemap.xml'), /<loc>https:\/\/clevanoo\.com\/faq<\/loc>\s*<lastmod>\d{4}-\d{2}-\d{2}<\/lastmod>/);
     assert.match(readBuild('robots.txt'), /Sitemap: https:\/\/clevanoo\.com\/jobs-sitemap\.xml/);
+    const unsubscribe = page('unsubscribe-email.html');
+    try {
+      assert.deepEqual([...unsubscribe.window.document.querySelectorAll('form input[required]')].map((input) => input.name), ['email']);
+    } finally {
+      unsubscribe.window.close();
+    }
   } finally {
     window.close();
   }

@@ -10,8 +10,16 @@ final class JobListing
         'accounting-finance' => '/\b(?:account(?:ant|ants|ing)|accounts (?:payable|receivable)|audit(?:or|ing)?|bookkeep(?:er|ing)|controller|finance|financial|bank(?:er|ing)|tax|treasury|payroll|underwrit(?:er|ing)|billing specialist)\b/i',
         'technology' => '/\b(?:software|developer|programmer|technology|IT|ITSM|cloud|cybersecurity|DevOps|QA|SDET|data|Snowflake|Databricks|ETL|SQL|database|network|systems?|technical|infrastructure|SAP|Workday|ServiceNow|salesforce|mainframe|full[- ]stack|web|AI|machine learning|scrum|SRE|BI|information security|security engineer|application support)\b/i',
         'telecommunications' => '/\b(?:telecom(?:munications?)?|fiber|fibre|OSP|wireless|RF engineer|radio frequency|broadband|VoIP|CCaaS|5G|unified communications|network engineer|network technician|network operations|NOC engineer)\b/i',
-        'healthcare' => '/\b(?:health[ -]?care|medical|clinical|nurs(?:e|es|ing)|RN|LPN|CNA|allied health|therap(?:y|ist)|PTA?|OT|rehab(?:ilitation)?|pharmac(?:y|ist|eutical)|physician|patient|radiolog(?:y|ist)|sonograph(?:er|y)|respiratory|Epic (?:analyst|system)|health informatics|care coordinator)\b/i',
+        'healthcare' => '/\b(?:health[ -]?care|medical|clinical|nurs(?:e|es|ing)|RN|LPN|CNA|allied health|therap(?:y|ist)|PTA?|rehab(?:ilitation)?|pharmac(?:y|ist|eutical)|physician|patient|radiolog(?:y|ist)|sonograph(?:er|y)|respiratory|Epic (?:analyst|system)|health informatics|care coordinator)\b/i',
     ];
+
+    public static function matchesCategory(Job $job, string $category): bool
+    {
+        $pattern = self::CATEGORY_PATTERNS[$category] ?? null;
+
+        return $pattern && (preg_match($pattern, $job->jobtitle)
+            || ($category === 'healthcare' && preg_match('/\b(?:health[ -]?care|medical claims|Medicaid|Medicare|health insurance claims|health plan claims)\b/i', (string) $job->description)));
+    }
 
     public static function location(Job $job): string
     {

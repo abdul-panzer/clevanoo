@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Job;
 use App\Support\JobListing;
+use App\Support\PublicJobs;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
@@ -12,37 +13,19 @@ class JobController extends Controller
     // Get all jobs
     public function index(Request $request)
     {
-        $query = Job::query();
-
         $filters = $request->validate([
             'search' => 'nullable|string|max:255',
             'per_page' => 'nullable|integer|min:1|max:100',
             'page' => 'nullable|integer|min:1',
             'category' => ['nullable', Rule::in(array_keys(JobListing::CATEGORY_PATTERNS))],
         ]);
-        if (($search = $filters['search'] ?? '') !== '') {
-            $query->where(function ($q) use ($search) {
-                $q->where('jobtitle', 'like', "%{$search}%")
-                    ->orWhere('city', 'like', "%{$search}%")
-                    ->orWhere('state', 'like', "%{$search}%")
-                    ->orWhere('duration', 'like', "%{$search}%")
-                    ->orWhere('description', 'like', "%{$search}%");
-            });
-        }
-        if ($category = $filters['category'] ?? null) {
-            $pattern = JobListing::CATEGORY_PATTERNS[$category];
-            $matching = (clone $query)->select(['id', 'jobtitle'])->lazyById()
-                ->filter(static fn (Job $job): bool => preg_match($pattern, $job->jobtitle) === 1)
-                ->pluck('id')->all();
-            $query->whereIntegerInRaw('id', $matching);
-        }
-        $query->orderByDesc('created_at')->orderByDesc('id');
-        $perPage = $filters['per_page'] ?? 10;
-        $jobs = $query->paginate($perPage)->through(static fn (Job $job): array => $job->toArray() + [
+        $page = min((int) ($filters['page'] ?? 1), 9);
+        $jobs = PublicJobs::page($filters['search'] ?? '', $filters['category'] ?? '', $page)
+            ->through(static fn (Job $job): array => $job->toArray() + [
             'facts' => JobListing::facts($job),
         ]);
 
-        return response()->json($jobs, 200);
+        return response()->json($jobs)->header('Cache-Control', 'private, no-store');
     }
 
     // Create a new job
@@ -57,7 +40,12 @@ class JobController extends Controller
             'description' => 'required|string|max:15000',
         ]);
 
-        $job = Job::create($validated);
+        $job = PublicJobs::locked(function () use ($validated): Job {
+            $job = Job::create($validated);
+            PublicJobs::rebalance(true);
+
+            return $job->refresh();
+        });
 
         return response()->json([
             'status'  => 'success',
@@ -68,12 +56,14 @@ class JobController extends Controller
 
 
     // Show a specific job
-    public function show(Job $job)
+    public function show(string $job)
     {
+        $job = PublicJobs::active()->whereKey($job)->firstOrFail();
+
         return response()->json($job->toArray() + [
             'facts' => JobListing::facts($job),
             'sections' => JobListing::sections($job),
-        ]);
+        ])->header('Cache-Control', 'private, no-store');
     }
 
     // Update a job
@@ -88,7 +78,13 @@ class JobController extends Controller
             'description' => 'sometimes|required|string|max:15000',
         ]);
 
-        $job->update($validated);
+        // Use a locked, fresh row so a concurrent close cannot be overwritten.
+        $job = PublicJobs::locked(function () use ($job, $validated): Job {
+            $current = Job::findOrFail($job->getKey());
+            $current->update($validated);
+
+            return $current;
+        });
 
         return response()->json($job, 200);
     }
@@ -96,13 +92,12 @@ class JobController extends Controller
     // Delete a job
     public function destroy($id)
     {
-        $job = Job::find($id);
-        if (!$job) {
-            return response()->json(['error' => 'Job not found.'], 404);
-        }
+        PublicJobs::locked(function () use ($id): void {
+            $job = Job::findOrFail($id);
+            $job->forceFill(['public_status' => PublicJobs::CLOSED])->save();
+            PublicJobs::rebalance(true);
+        });
 
-        $job->delete();
-
-        return response()->json(['message' => 'Job deleted successfully.'], 200);
+        return response()->json(['message' => 'Job closed successfully.']);
     }
 }

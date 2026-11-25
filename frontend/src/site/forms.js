@@ -62,7 +62,7 @@ export function initEmailForm() {
   }, {
     busy: 'Sending…',
     success: type === 'unsubscribe'
-      ? 'We received your unsubscribe request. You will be removed from our database within 24 hours.'
+      ? 'We received your unsubscribe request.'
       : 'Thank you. Your message has been sent.',
     failure: 'Your request could not be sent. Please try again or email info@clevanoo.com.',
   });

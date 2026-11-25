@@ -107,9 +107,17 @@ class WebsiteFlowsTest extends TestCase
         $this->postJson('/api/website-email', $contact)->assertOk();
         $this->postJson('/api/website-email', $contact)->assertOk();
         $this->postJson('/api/website-email', [
-            'type' => 'unsubscribe', 'name' => 'Unsubscribe QA', 'email' => 'sender@example.test', 'phone' => '5550101234',
-        ])->assertOk();
+            'type' => 'unsubscribe', 'email' => 'opt-out@example.test',
+        ])->assertOk()->assertJsonPath('message', 'We received your unsubscribe request.');
+        if (! getenv('CLEVANOO_TEST_SMTP_PORT')) {
+            $notifications = Mail::getSymfonyTransport()->messages();
+            $this->assertCount(2, $notifications);
+            $this->assertSame('New unsubscribe request', $notifications[1]->getOriginalMessage()->getSubject());
+            $this->assertStringContainsString('opt-out@example.test', $notifications[1]->getOriginalMessage()->getHtmlBody());
+        }
         $this->postJson('/api/website-email', ['type' => 'contact'])->assertUnprocessable();
+        $this->postJson('/api/website-email', ['type' => 'contact', 'email' => 'sender@example.test'])
+            ->assertUnprocessable()->assertJsonValidationErrors(['name', 'message']);
 
         config(['mail.default' => 'unconfigured-mailer']);
         $this->postJson('/api/website-email', array_replace($contact, ['message' => 'Retry this message.']))->assertStatus(502);

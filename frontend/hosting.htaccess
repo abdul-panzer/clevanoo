@@ -31,8 +31,8 @@ ErrorDocument 404 /404.html
 
     # Serve the generated page for each clean URL.
     RewriteRule ^jobUpload/?$ job-upload.html [END,NC]
-    RewriteRule ^(about|services|zendesk|industries|jobs|contact|faq|unsubscribe-email)/?$ $1.html [END]
+    RewriteRule ^(about|services|zendesk|industries|contact|faq|unsubscribe-email)/?$ $1.html [END]
     RewriteRule ^case-studies/?$ zendesk-case-studies.html [END]
     RewriteRule ^speciality/?$ specialities.html [END]
-    RewriteRule ^(?:job/[1-9][0-9]*|jobs-sitemap\.xml)$ backend/public/index.php [END]
+    RewriteRule ^(?:jobs|job/[1-9][0-9]*|jobs-sitemap\.xml)$ backend/public/index.php [END]
 </IfModule>
